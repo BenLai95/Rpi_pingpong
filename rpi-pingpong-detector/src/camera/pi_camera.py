@@ -2,21 +2,24 @@ import cv2
 
 class PiCamera:
     def __init__(self):
-        import picamera
-        self.camera = picamera.PiCamera()
-        self.camera.resolution = (640, 480)
-        self.camera.framerate = 30
+        from picamera2 import Picamera2
+        self.picam2 = Picamera2()
+        config = self.picam2.create_still_configuration(main={"size": (640, 480)})
+        self.picam2.configure(config)
 
-    def start_camera(self):
-        self.camera.start_preview()
+    def start(self):
+        self.picam2.start()
 
     def capture_frame(self):
         import numpy as np
-        from io import BytesIO
-        stream = BytesIO()
-        self.camera.capture(stream, format='jpeg')
-        stream.seek(0)
-        return np.array(bytearray(stream.read()), dtype=np.uint8)
+        # 直接取得RGB陣列
+        frame = self.picam2.capture_array()
+        # 如果你需要BGR格式（OpenCV預設），可以轉換
+        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        return frame
+
+    def stop(self):
+        self.picam2.close()
 
 class WebcamCamera:
     def __init__(self, camera_id=0):
