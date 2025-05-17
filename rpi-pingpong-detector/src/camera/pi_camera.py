@@ -31,3 +31,16 @@ class WebcamCamera:
 
     def stop(self):
         self.cap.release()
+
+class ImageCamera:
+    def __init__(self, image_path):
+        self.image = cv2.imread(image_path)
+
+    def start(self):
+        pass  # 不需要啟動
+
+    def capture_frame(self):
+        return self.image.copy()  # 每次都回傳同一張圖片
+
+    def stop(self):
+        pass  # 不需要釋放資源

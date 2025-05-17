@@ -1,9 +1,11 @@
-from camera.pi_camera import PiCamera
+from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
 from detection.pingpong_detector import PingPongDetector
 import time
 
 def main():
-    camera = PiCamera()
+    #camera = PiCamera()
+    #camera = WebcamCamera(camera_id=0)  # Use the first webcam
+    camera = ImageCamera(image_path='image.jpg')  # Use a test image
     detector = PingPongDetector()
 
     camera.start()
