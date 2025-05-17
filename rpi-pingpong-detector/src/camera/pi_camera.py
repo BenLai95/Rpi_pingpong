@@ -1,3 +1,5 @@
+import cv2
+
 class PiCamera:
     def __init__(self):
         import picamera
@@ -15,8 +17,6 @@ class PiCamera:
         self.camera.capture(stream, format='jpeg')
         stream.seek(0)
         return np.array(bytearray(stream.read()), dtype=np.uint8)
-    
-import cv2
 
 class WebcamCamera:
     def __init__(self, camera_id=0):
