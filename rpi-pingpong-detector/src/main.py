@@ -6,9 +6,9 @@ import cv2
 
 def main():
     # 選擇攝影機來源
-    camera = PiCamera()  # 樹莓派相機
+    #camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    #camera = ImageCamera(image_path='image.jpg')  # 使用測試圖片
+    camera = ImageCamera(image_path='image.jpg')  # 使用測試圖片
 
     detector = PingPongDetector()  # 建立乒乓球偵測器
 
@@ -16,8 +16,9 @@ def main():
 
     # mode 0: 拍一張照片並儲存
     # mode 1: 持續偵測乒乓球
-    mode = 0
+    #mode = 0
     #mode = 1
+    mode = 2
 
     if mode == 0:
         try:
@@ -40,6 +41,17 @@ def main():
                 time.sleep(1)  # 每秒檢查一次，可依需求調整
         except KeyboardInterrupt:
             print("Exiting...")  # 按 Ctrl+C 可中斷程式
+        finally:
+            camera.stop()  # 關閉攝影機，釋放資源
+    elif mode == 2:
+        try:
+            detector = PingPongDetector()  # 建立乒乓球偵測器
+            frame = camera.capture_frame()  # 擷取一張影像
+            # 偵測乒乓球
+            if detector.detect_ball(frame, visualize=True):
+                print("Ping pong ball detected!")
+            else:
+                print("No ping pong ball detected.")
         finally:
             camera.stop()  # 關閉攝影機，釋放資源
 
