@@ -4,8 +4,8 @@ import numpy as np
 class PingPongDetector:
     def __init__(self):
         # 設定橘色乒乓球的HSV顏色範圍（可依實際球顏色調整）
-        self.lower_orange = np.array([10, 100, 100])
-        self.upper_orange = np.array([25, 255, 255])
+        self.lower_orange = np.array([22, 130, 190])
+        self.upper_orange = np.array([39, 255, 255])
 
     def create_hsv_trackbar():
         cv2.namedWindow("HSV 調整")
@@ -42,14 +42,15 @@ class PingPongDetector:
 
         # 產生橘色遮罩
         mask = cv2.inRange(hsv, self.lower_orange, self.upper_orange)
-        kernel = np.ones((20, 20), np.uint8)
-        closed = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+        kernel = np.ones((7, 7), np.uint8)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
         if visualize:
             cv2.imshow("橘色遮罩", mask)
-            cv2.imshow("關閉運算後遮罩", closed)
+            cv2.imshow("關閉運算後遮罩", mask)
 
         # 高斯模糊
-        blurred = cv2.GaussianBlur(closed, (9, 9), 2)
+        blurred = cv2.GaussianBlur(mask, (9, 9), 2)
         if visualize:
             cv2.imshow("模糊後遮罩", blurred)
 

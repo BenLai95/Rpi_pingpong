@@ -9,7 +9,7 @@ def nothing(x):
 
 def main():
     # 載入測試圖片
-    image = cv2.imread('image/pingpongball.jpg')
+    image = cv2.imread('image/pingpongball2.jpg')
     if image is None:
         print("找不到圖片！")
         return
