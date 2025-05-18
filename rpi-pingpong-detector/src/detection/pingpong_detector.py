@@ -7,6 +7,28 @@ class PingPongDetector:
         self.lower_orange = np.array([10, 100, 100])
         self.upper_orange = np.array([25, 255, 255])
 
+    def create_hsv_trackbar():
+        cv2.namedWindow("HSV 調整")
+
+        # 建立6個trackbar控制H, S, V的上下界
+        cv2.createTrackbar("H Lower", "HSV 調整", 0, 179, nothing)
+        cv2.createTrackbar("H Upper", "HSV 調整", 30, 179, nothing)
+        cv2.createTrackbar("S Lower", "HSV 調整", 70, 255, nothing)
+        cv2.createTrackbar("S Upper", "HSV 調整", 255, 255, nothing)
+        cv2.createTrackbar("V Lower", "HSV 調整", 70, 255, nothing)
+        cv2.createTrackbar("V Upper", "HSV 調整", 255, 255, nothing)
+
+    def get_trackbar_values():
+        h_lower = cv2.getTrackbarPos("H Lower", "HSV 調整")
+        h_upper = cv2.getTrackbarPos("H Upper", "HSV 調整")
+        s_lower = cv2.getTrackbarPos("S Lower", "HSV 調整")
+        s_upper = cv2.getTrackbarPos("S Upper", "HSV 調整")
+        v_lower = cv2.getTrackbarPos("V Lower", "HSV 調整")
+        v_upper = cv2.getTrackbarPos("V Upper", "HSV 調整")
+        lower = np.array([h_lower, s_lower, v_lower])
+        upper = np.array([h_upper, s_upper, v_upper])
+        return lower, upper
+
     def detect_ball(self, image, visualize=False):
         # 前處理影像
         processed = self.preprocess_image(image)
@@ -20,18 +42,21 @@ class PingPongDetector:
 
         # 產生橘色遮罩
         mask = cv2.inRange(hsv, self.lower_orange, self.upper_orange)
+        kernel = np.ones((20, 20), np.uint8)
+        closed = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
         if visualize:
             cv2.imshow("橘色遮罩", mask)
+            cv2.imshow("關閉運算後遮罩", closed)
 
         # 高斯模糊
-        blurred = cv2.GaussianBlur(mask, (9, 9), 2)
+        blurred = cv2.GaussianBlur(closed, (9, 9), 2)
         if visualize:
             cv2.imshow("模糊後遮罩", blurred)
 
         # 霍夫圓檢測
         circles = cv2.HoughCircles(
             blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=30,
-            param1=50, param2=15, minRadius=10, maxRadius=50
+            param1=50, param2=15, minRadius=5, maxRadius=100
         )
 
         # 畫出圓形在原圖上
