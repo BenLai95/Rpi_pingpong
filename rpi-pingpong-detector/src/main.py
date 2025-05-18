@@ -8,7 +8,7 @@ def main():
     # 選擇攝影機來源
     #camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    camera = ImageCamera(image_path='image.jpg')  # 使用測試圖片
+    camera = ImageCamera(image_path='image/pingpongball.jpg')  # 使用測試圖片
 
     detector = PingPongDetector()  # 建立乒乓球偵測器
 
