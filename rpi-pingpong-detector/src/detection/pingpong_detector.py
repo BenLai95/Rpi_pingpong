@@ -4,7 +4,7 @@ import numpy as np
 class PingPongDetector:
     def __init__(self):
         # 設定橘色乒乓球的HSV顏色範圍（可依實際球顏色調整）
-        self.lower_orange = np.array([22, 130, 190])
+        self.lower_orange = np.array([19, 184, 95])
         self.upper_orange = np.array([39, 255, 255])
 
     def create_hsv_trackbar():
