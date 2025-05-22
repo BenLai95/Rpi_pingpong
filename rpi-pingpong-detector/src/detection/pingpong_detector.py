@@ -80,37 +80,37 @@ class PingPongDetector:
                 cv2.imshow("圓形偵測結果", output)
                 cv2.waitKey(0)
             return False
-        
-    def detect_ball_gray(self, image, visualize=False):
+
+    def detect_ball_sobel(self, image, visualize=False):
         # 前處理影像
         processed = self.preprocess_image(image)
         if visualize:
             cv2.imshow("原圖", processed)
 
-        # 轉換顏色空間到gray
+        # 轉灰階
         gray = cv2.cvtColor(processed, cv2.COLOR_BGR2GRAY)
         if visualize:
-            cv2.imshow("gray圖", gray)
+            cv2.imshow("灰階圖", gray)
 
-        # 產生橘色遮罩
-        mask = cv2.inRange(gray, 0, 255)
+        # Sobel 邊緣偵測
+        sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=3)
+        sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=3)
+        sobel = cv2.magnitude(sobelx, sobely)
+        sobel = np.uint8(np.clip(sobel, 0, 255))
         if visualize:
-            cv2.imshow("gray遮罩", mask)
-        # 開運算（去除小雜訊）
-        kernel = np.ones((7, 7), np.uint8)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+            cv2.imshow("Sobel 邊緣", sobel)
+
+        # 模糊
+        blurred = cv2.GaussianBlur(sobel, (9, 9), 2)
         if visualize:
-            cv2.imshow("關閉運算後遮罩", mask)
-        # 高斯模糊
-        blurred = cv2.GaussianBlur(mask, (9, 9), 2)
-        if visualize:
-            cv2.imshow("模糊後遮罩", blurred)
+            cv2.imshow("模糊後邊緣", blurred)
+
         # 霍夫圓檢測
         circles = cv2.HoughCircles(
             blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=30,
             param1=50, param2=15, minRadius=5, maxRadius=100
         )
+
         # 畫出圓形在原圖上
         output = processed.copy()
         if circles is not None:
@@ -120,7 +120,6 @@ class PingPongDetector:
                 cv2.circle(output, (i[0], i[1]), 2, (0, 0, 255), 3)
             if visualize:
                 cv2.imshow("圓形偵測結果", output)
-            if visualize:
                 cv2.waitKey(0)
             return True
         else:
@@ -128,8 +127,6 @@ class PingPongDetector:
                 cv2.imshow("圓形偵測結果", output)
                 cv2.waitKey(0)
             return False
-        
-
 
     def preprocess_image(self, image):
         # 影像前處理，可加上resize、去雜訊等（目前直接回傳原圖）

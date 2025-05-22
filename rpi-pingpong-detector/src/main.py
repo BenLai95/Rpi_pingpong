@@ -51,7 +51,7 @@ def main():
             print("Frame saved.")
             detector = PingPongDetector()  # 建立乒乓球偵測器
             # 偵測乒乓球
-            if detector.detect_ball_gray(frame, visualize=True):
+            if detector.detect_ball_sobel(frame, visualize=True):
                 print("Ping pong ball detected!")
             else:
                 print("No ping pong ball detected.")
