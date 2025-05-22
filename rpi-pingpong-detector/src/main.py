@@ -47,8 +47,6 @@ def main():
         try:
             frame = camera.capture_frame()  # 擷取一張影像
             # 儲存 frame 到當前資料夾
-            cv2.imwrite('captured_frame.jpg', frame)
-            print("Frame saved.")
             detector = PingPongDetector()  # 建立乒乓球偵測器
             # 偵測乒乓球
             if detector.detect_ball_sobel(frame, visualize=True):
