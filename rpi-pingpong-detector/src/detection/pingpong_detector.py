@@ -37,16 +37,21 @@ class PingPongDetector:
 
         # 轉換顏色空間到HSV
         hsv = cv2.cvtColor(processed, cv2.COLOR_BGR2HSV)
+        gray = cv2.cvtColor(processed, cv2.COLOR_BGR2GRAY)
         if visualize:
             cv2.imshow("HSV圖", hsv)
+            cv2.imshow("灰階圖", gray)
 
         # 產生橘色遮罩
         mask = cv2.inRange(hsv, self.lower_orange, self.upper_orange)
+        if visualize:
+            cv2.imshow("橘色遮罩", mask)
+        
+        # 開運算（去除小雜訊）
         kernel = np.ones((7, 7), np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
         if visualize:
-            cv2.imshow("橘色遮罩", mask)
             cv2.imshow("關閉運算後遮罩", mask)
 
         # 高斯模糊
