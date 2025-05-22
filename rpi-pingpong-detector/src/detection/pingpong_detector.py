@@ -7,18 +7,19 @@ class PingPongDetector:
         self.lower_orange = np.array([19, 198, 134])
         self.upper_orange = np.array([50, 255, 255])
 
-    def create_hsv_trackbar():
+    def create_hsv_trackbar(self):
+        def nothing(x):
+            pass
+
         cv2.namedWindow("HSV 調整")
+        cv2.createTrackbar("H Lower", "HSV 調整", 0, 179, nothing)
+        cv2.createTrackbar("H Upper", "HSV 調整", 30, 179, nothing)
+        cv2.createTrackbar("S Lower", "HSV 調整", 70, 255, nothing)
+        cv2.createTrackbar("S Upper", "HSV 調整", 255, 255, nothing)
+        cv2.createTrackbar("V Lower", "HSV 調整", 70, 255, nothing)
+        cv2.createTrackbar("V Upper", "HSV 調整", 255, 255, nothing)
 
-        # 建立6個trackbar控制H, S, V的上下界
-        cv2.createTrackbar("H Lower", "HSV 調整", 0, 179, )
-        cv2.createTrackbar("H Upper", "HSV 調整", 30, 179, )
-        cv2.createTrackbar("S Lower", "HSV 調整", 70, 255, )
-        cv2.createTrackbar("S Upper", "HSV 調整", 255, 255, )
-        cv2.createTrackbar("V Lower", "HSV 調整", 70, 255, )
-        cv2.createTrackbar("V Upper", "HSV 調整", 255, 255, )
-
-    def get_trackbar_values():
+    def get_trackbar_values(self):
         h_lower = cv2.getTrackbarPos("H Lower", "HSV 調整")
         h_upper = cv2.getTrackbarPos("H Upper", "HSV 調整")
         s_lower = cv2.getTrackbarPos("S Lower", "HSV 調整")
