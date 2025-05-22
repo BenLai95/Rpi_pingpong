@@ -19,7 +19,7 @@ def main():
     # mode 1: 持續偵測乒乓球
     #mode = 0
     #mode = 1
-    mode = 3
+    mode = 2
 
     if mode == 0:
         try:
