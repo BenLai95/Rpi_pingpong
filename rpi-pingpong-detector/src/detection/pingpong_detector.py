@@ -133,3 +133,5 @@ class PingPongDetector:
                 break
 
         cv2.destroyAllWindows()
+
+#if __name__ == "__main__":
