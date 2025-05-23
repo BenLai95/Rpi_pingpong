@@ -4,7 +4,7 @@ import numpy as np
 class PingPongDetector:
     def __init__(self):
         # 設定橘色乒乓球的HSV顏色範圍（可依實際球顏色調整）
-        self.lower_orange = np.array([10, 139, 201])
+        self.lower_orange = np.array([10, 139, 203])
         self.upper_orange = np.array([25, 255, 255])
         #測出來大概分布在(25,40),(139,255),(200,255)之間
 
@@ -73,12 +73,22 @@ class PingPongDetector:
                 cv2.circle(output, (i[0], i[1]), i[2], (0, 255, 0), 2)
                 cv2.circle(output, (i[0], i[1]), 2, (0, 0, 255), 3)
 
-        # === 輪廓分析（新增） ===
+        # === 輪廓分析（新增，含圓度過濾） ===
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         for cnt in contours:
             area = cv2.contourArea(cnt)
             if area < 50:
                 continue
+            # 計算圓度
+            # 這裡的圓度計算是基於面積和周長的比值
+            # 但效果不佳
+            '''perimeter = cv2.arcLength(cnt, True)
+            if perimeter == 0:
+                continue
+            circularity = 4 * np.pi * area / (perimeter * perimeter)
+            if circularity < 0.5:  # 只保留圓度高於0.75的輪廓
+                continue'''
+            
             (x, y), radius = cv2.minEnclosingCircle(cnt)
             center = (int(x), int(y))
             radius = int(radius)
