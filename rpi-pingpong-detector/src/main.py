@@ -9,7 +9,7 @@ def main():
     # 選擇攝影機來源
     #camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    camera = ImageCamera(image_path='image/pingpongball2.jpg')  # 使用測試圖片
+    camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
 
     detector = PingPongDetector()  # 建立乒乓球偵測器
 
@@ -78,8 +78,21 @@ def main():
                 if circles is not None:
                     circles = np.uint16(np.around(circles))
                     for i in circles[0, :]:
-                        cv2.circle(output, (i[0], i[1]), i[2], (0, 255, 0), 2)
+                        cv2.circle(output, (i[0], i[1]), i[2], (0, 255, 0), 2)  # 綠色圓
                         cv2.circle(output, (i[0], i[1]), 2, (0, 0, 255), 3)
+
+                # === 輪廓分析（新增） ===
+                contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                for cnt in contours:
+                    area = cv2.contourArea(cnt)
+                    if area < 50:
+                        continue
+                    (x, y), radius = cv2.minEnclosingCircle(cnt)
+                    center = (int(x), int(y))
+                    radius = int(radius)
+                    if 5 < radius < 50:
+                        cv2.circle(output, center, radius, (255, 0, 0), 2)  # 藍色圓
+                        cv2.circle(output, center, 2, (0, 0, 255), 3)
 
                 cv2.imshow("原圖", frame)
                 cv2.imshow("遮罩", mask)

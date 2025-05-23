@@ -72,16 +72,26 @@ class PingPongDetector:
             for i in circles[0, :]:
                 cv2.circle(output, (i[0], i[1]), i[2], (0, 255, 0), 2)
                 cv2.circle(output, (i[0], i[1]), 2, (0, 0, 255), 3)
-            if visualize:
-                cv2.imshow("圓形偵測結果", output)
-            if visualize:
-                cv2.waitKey(0)
-            return True
-        else:
-            if visualize:
-                cv2.imshow("圓形偵測結果", output)
-                cv2.waitKey(0)
-            return False
+
+        # === 輪廓分析（新增） ===
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            if area < 50:
+                continue
+            (x, y), radius = cv2.minEnclosingCircle(cnt)
+            center = (int(x), int(y))
+            radius = int(radius)
+            if 5 < radius < 50:
+                cv2.circle(output, center, radius, (255, 0, 0), 2)  # 藍色圓
+                cv2.circle(output, center, 2, (0, 0, 255), 3)
+
+        if visualize:
+            cv2.imshow("圓形偵測結果", output)
+            cv2.waitKey(0)
+
+        # 回傳值可依你需求決定
+        return circles is not None or len(contours) > 0
 
     def detect_ball_sobel(self, image, visualize=False):
         # 前處理影像
