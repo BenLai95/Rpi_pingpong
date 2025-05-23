@@ -122,33 +122,44 @@ class PingPongDetector:
         if visualize:
             cv2.imshow("Sobel 邊緣", sobel)
 
-        # 模糊
-        blurred = cv2.GaussianBlur(sobel, (9, 9), 2)
+        # 二值化
+        _, binary = cv2.threshold(sobel, 50, 255, cv2.THRESH_BINARY)
         if visualize:
-            cv2.imshow("模糊後邊緣", blurred)
+            cv2.imshow("Sobel二值化", binary)
 
-        # 霍夫圓檢測
-        circles = cv2.HoughCircles(
-            blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=30,
-            param1=50, param2=15, minRadius=5, maxRadius=100
-        )
+        # 形態學處理
+        kernel = np.ones((5, 5), np.uint8)
+        binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+        if visualize:
+            cv2.imshow("形態學處理後", binary)
 
-        # 畫出圓形在原圖上
+        # 輪廓分析 + 圓度過濾
+        contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         output = processed.copy()
-        if circles is not None:
-            circles = np.uint16(np.around(circles))
-            for i in circles[0, :]:
-                cv2.circle(output, (i[0], i[1]), i[2], (0, 255, 0), 2)
-                cv2.circle(output, (i[0], i[1]), 2, (0, 0, 255), 3)
-            if visualize:
-                cv2.imshow("圓形偵測結果", output)
-                cv2.waitKey(0)
-            return True
-        else:
-            if visualize:
-                cv2.imshow("圓形偵測結果", output)
-                cv2.waitKey(0)
-            return False
+        found = False
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            if area < 50:
+                continue
+            perimeter = cv2.arcLength(cnt, True)
+            if perimeter == 0:
+                continue
+            circularity = 4 * np.pi * area / (perimeter * perimeter)
+            if circularity < 0.75:
+                continue
+            (x, y), radius = cv2.minEnclosingCircle(cnt)
+            center = (int(x), int(y))
+            radius = int(radius)
+            if 5 < radius < 50:
+                cv2.circle(output, center, radius, (255, 0, 0), 2)
+                cv2.circle(output, center, 2, (0, 0, 255), 3)
+                found = True
+
+        if visualize:
+            cv2.imshow("Sobel輪廓圓形偵測", output)
+            cv2.waitKey(0)
+
+        return found
 
     def preprocess_image(self, image):
         # 影像前處理，可加上resize、去雜訊等（目前直接回傳原圖）
