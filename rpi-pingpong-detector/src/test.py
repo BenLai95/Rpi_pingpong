@@ -1,5 +1,5 @@
 from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
-from detection.pingpong_detector_test import PingPongDetector
+from detection.pingpong_detector_test import PingPongDetector2
 import time
 import cv2
 
@@ -8,9 +8,9 @@ def main():
     # 選擇攝影機來源
     #camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    camera = ImageCamera(image_path='image/pingpongball2.jpg')  # 使用測試圖片
+    camera = ImageCamera(image_path='image/captured_frame1.jpg')  # 使用測試圖片
 
-    detector = PingPongDetector()  # 建立乒乓球偵測器
+    detector = PingPongDetector2()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
@@ -45,7 +45,6 @@ def main():
             camera.stop()  # 關閉攝影機，釋放資源
     elif mode == 2:
         try:
-            detector = PingPongDetector()  # 建立乒乓球偵測器
             frame = camera.capture_frame()  # 擷取一張影像
             # 偵測乒乓球
             if print(detector.detect_ball_hsv(frame, visualize=True)):
