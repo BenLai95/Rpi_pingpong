@@ -212,4 +212,13 @@ class PingPongDetector:
 
         cv2.destroyAllWindows()
 
+class PiCamera:
+    def __init__(self):
+        from picamera2 import Picamera2
+        if not Picamera2.global_camera_info():
+            raise RuntimeError("找不到樹莓派相機，請檢查連接與驅動！")
+        self.picam2 = Picamera2()
+        config = self.picam2.create_still_configuration(main={"size": (640, 480)})
+        self.picam2.configure(config)
+
 #if __name__ == "__main__":
