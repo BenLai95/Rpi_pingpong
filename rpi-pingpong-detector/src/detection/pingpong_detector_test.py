@@ -4,7 +4,7 @@ import numpy as np
 class PingPongDetector:
     def __init__(self):
         # 設定橘色乒乓球的HSV顏色範圍（可依實際球顏色調整）
-        self.lower_orange = np.array([5, 100, 100])
+        self.lower_orange = np.array([10, 139, 203])
         self.upper_orange = np.array([25, 255, 255])
 
 
@@ -67,6 +67,68 @@ class PingPongDetector:
 
         return detected
 
+
+    def detect_ball_hsv(self, image, visualize=False):
+        height, width = image.shape[:2]
+        center_x = width // 2  # 螢幕中心 x 座標
+
+        processed = self.preprocess_image(image)
+        hsv = cv2.cvtColor(processed, cv2.COLOR_BGR2HSV)
+        mask = cv2.inRange(hsv, self.lower_orange, self.upper_orange)
+
+        # 消除雜訊
+        kernel = np.ones((7, 7), np.uint8)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+        blurred = cv2.GaussianBlur(mask, (9, 9), 2)
+
+        output = processed.copy()
+        selected_center = None
+
+        # === 優先找藍色：輪廓外接圓 ===
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        largest_area = 0
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            if area < 50:
+                continue
+            (x, y), radius = cv2.minEnclosingCircle(cnt)
+            if 5 < radius < 50 and area > largest_area:
+                largest_area = area
+                selected_center = (int(x), int(y))
+                selected_radius = int(radius)
+                selected_color = (255, 0, 0)  # 藍色
+
+        # === 若藍色找不到，再用綠色（霍夫圓） ===
+        if selected_center is None:
+            circles = cv2.HoughCircles(
+                blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=30,
+                param1=50, param2=15, minRadius=5, maxRadius=100
+            )
+            if circles is not None:
+                circles = np.uint16(np.around(circles))
+                max_r = 0
+                for c in circles[0, :]:
+                    if c[2] > max_r:
+                        selected_center = (c[0], c[1])
+                        selected_radius = c[2]
+                        selected_color = (0, 255, 0)  # 綠色
+
+        # 若找到球，畫出圓形並計算偏移
+        if selected_center is not None:
+            cv2.circle(output, selected_center, selected_radius, selected_color, 2)
+            cv2.circle(output, selected_center, 2, (0, 0, 255), 3)
+            delta_x = selected_center[0] - center_x
+        else:
+            delta_x = None
+
+        if visualize:
+            cv2.line(output, (center_x, 0), (center_x, height), (255, 255, 255), 1)  # 畫中心線
+            cv2.imshow("追蹤結果", output)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
+        return delta_x
 
 
     def preprocess_image(self, image):

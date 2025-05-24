@@ -8,7 +8,7 @@ def main():
     # 選擇攝影機來源
     #camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    camera = ImageCamera(image_path='image/captured_frame2.jpg')  # 使用測試圖片
+    camera = ImageCamera(image_path='image/pingpongball2.jpg')  # 使用測試圖片
 
     detector = PingPongDetector()  # 建立乒乓球偵測器
 
@@ -48,7 +48,7 @@ def main():
             detector = PingPongDetector()  # 建立乒乓球偵測器
             frame = camera.capture_frame()  # 擷取一張影像
             # 偵測乒乓球
-            if detector.detect_ball(frame, visualize=True):
+            if print(detector.detect_ball_hsv(frame, visualize=True)):
                 print("Ping pong ball detected!")
             else:
                 print("No ping pong ball detected.")
