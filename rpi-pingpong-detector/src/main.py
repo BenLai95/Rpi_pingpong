@@ -7,23 +7,34 @@ import numpy as np
 
 def main():
     # 選擇攝影機來源
-    #camera = PiCamera()  # 樹莓派相機
+    camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
+    #camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
 
     detector = PingPongDetector()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
-    # mode 0: 拍一張照片並儲存
-    # mode 1: 持續偵測乒乓球
-    #mode = 0
-    #mode = 1
-    mode = 2
+    mode = 0 #拍一張照片並儲存
+    #mode = 1 #持續偵測乒乓球
+    #mode = 2 # 偵測乒乓球
+    #mode = 3 # 偵測乒乓球 + HSV調整
 
     if mode == 0:
         try:
-            frame = camera.capture_frame()  # 擷取一張影像
+            num_photos = 10  # 你想拍幾張
+            intervals = []
+            for i in range(num_photos):
+                start = time.time()
+                frame = camera.capture_frame()
+                filename = f"captured_{i+1}.jpg"
+                cv2.imwrite(filename, frame)
+                end = time.time()
+                interval = end - start
+                intervals.append(interval)
+                print(f"Saved {filename}, interval: {interval:.3f} 秒")
+            avg_interval = sum(intervals) / len(intervals)
+            print(f"平均每張間隔：{avg_interval:.3f} 秒")
         finally:
             camera.stop()  # 關閉攝影機，釋放資源
 
