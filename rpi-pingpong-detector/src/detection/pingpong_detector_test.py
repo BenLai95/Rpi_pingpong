@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-class PingPongDetector:
+class PingPongDetector2:
     def __init__(self):
         # 設定橘色乒乓球的HSV顏色範圍（可依實際球顏色調整）
         self.lower_orange = np.array([10, 139, 203])

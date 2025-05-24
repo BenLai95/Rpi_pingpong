@@ -1,5 +1,6 @@
 from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
 from detection.pingpong_detector import PingPongDetector
+from detection.pingpong_detector_test import PingPongDetector2
 import time
 import cv2
 import numpy as np
@@ -11,7 +12,7 @@ def main():
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
     camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
 
-    detector = PingPongDetector()  # 建立乒乓球偵測器
+    detector = PingPongDetector2()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
@@ -33,6 +34,7 @@ def main():
                 interval = end - start
                 intervals.append(interval)
                 print(f"Saved {filename}, interval: {interval:.3f} 秒")
+                print(detector.detect_ball_hsv(frame))
             avg_interval = sum(intervals) / len(intervals)
             print(f"平均每張間隔：{avg_interval:.3f} 秒")
         finally:
