@@ -1,4 +1,0 @@
-RPi.GPIO
-gpiozero
-numpy
-opencv-python-headless
