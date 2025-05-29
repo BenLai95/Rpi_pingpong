@@ -1,3 +1,5 @@
+import time
+
 class ServoMotor:
     def __init__(self, pin=4):
         import RPi.GPIO as GPIO
