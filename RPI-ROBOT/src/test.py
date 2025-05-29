@@ -1,7 +1,5 @@
 from motors.servo import ServoMotor
 
-
-
 def main():
     servo = ServoMotor(pin=4)  # 根據你的實際接腳調整 pin 編號
     try:
