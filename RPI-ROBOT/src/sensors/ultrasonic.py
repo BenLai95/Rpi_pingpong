@@ -27,24 +27,11 @@ class UltrasonicSensor:
         GPIO.output(self.trigger_pin, True)
         time.sleep(0.00001)  # 10us
         GPIO.output(self.trigger_pin, False)
-
-        # Wait for echo to go HIGH (start of pulse)
         pulse_start = time.time()
-        timeout_start = pulse_start + 0.02  # 20ms timeout
         
         while GPIO.input(self.echo_pin) == 0:
-            pulse_start = time.time()
-            if pulse_start > timeout_start:
-                return -1  # Timeout waiting for echo start
-
-        # Wait for echo to go LOW (end of pulse)
+            
         pulse_end = time.time()
-        timeout_end = pulse_end + 0.02  # 20ms timeout
-        
-        while GPIO.input(self.echo_pin) == 1:
-            pulse_end = time.time()
-            if pulse_end > timeout_end:
-                return -1  # Timeout waiting for echo end
 
         # Calculate distance
         pulse_duration = pulse_end - pulse_start
