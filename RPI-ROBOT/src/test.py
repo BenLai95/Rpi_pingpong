@@ -1,5 +1,6 @@
 from motors.servo import ServoMotor
 from sensors.ultrasonic import UltrasonicSensor
+from RPI.GPIO import GPIO
 
 def main():
     servo = ServoMotor(pin=17)  # 根據你的實際接腳調整 pin 編號
