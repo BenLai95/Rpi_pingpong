@@ -1,15 +1,17 @@
 from motors.servo import ServoMotor
 from sensors.ultrasonic import UltrasonicSensor
-import RPi.GPIO as GPIO
 
 def main():
     servo = ServoMotor(pin=17)  # 根據你的實際接腳調整 pin 編號
-    ultrasonic = UltrasonicSensor()
+    ultrasonic = UltrasonicSensor(trigger_pin=3, echo_pin=2)  # 指定腳位
     try:
         while True:
             distance = ultrasonic.get_distance()
-            print(f"距離: {distance:.2f} cm")
-            '''angle = input("請輸入要旋轉的角度 (0~180，q 離開): ")
+            if distance == -1:
+                print("測距失敗（超出範圍或逾時）")
+            else:
+                print(f"距離: {distance:.2f} cm")
+            angle = input("請輸入要旋轉的角度 (0~180，q 離開): ")
             if angle.lower() == 'q':
                 break
             try:
@@ -20,13 +22,13 @@ def main():
                 else:
                     print("請輸入 0~180 之間的數字")
             except ValueError:
-                print("請輸入有效的數字或 q 離開")'''
+                print("請輸入有效的數字或 q 離開")
     except KeyboardInterrupt:
         print("\n中斷測試")
     finally:
         servo.cleanup()
+        ultrasonic.cleanup()
         print("已釋放 GPIO 資源")
-
 
 if __name__ == "__main__":
     main()
