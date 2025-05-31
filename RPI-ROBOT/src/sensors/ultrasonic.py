@@ -29,8 +29,9 @@ class UltrasonicSensor:
         GPIO.output(self.trigger_pin, False)
         pulse_start = time.time()
         
-        while GPIO.input(self.echo_pin) == 0:
-            continue
+        while GPIO.input(self.echo_pin) != 1:
+            if GPIO.input(self.echo_pin) == 1:
+                break
         pulse_end = time.time()
 
         # Calculate distance
