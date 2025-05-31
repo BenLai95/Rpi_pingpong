@@ -1,7 +1,7 @@
 from motors.servo import ServoMotor
 
 def main():
-    servo = ServoMotor(pin=4)  # 根據你的實際接腳調整 pin 編號
+    servo = ServoMotor(pin=17)  # 根據你的實際接腳調整 pin 編號
     try:
         while True:
             angle = input("請輸入要旋轉的角度 (0~180，q 離開): ")
