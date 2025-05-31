@@ -40,9 +40,7 @@ class UltrasonicSensor:
         distance = (pulse_duration * 34300) / 2
         
         # Filter out unrealistic readings
-        if distance < 2 or distance > 400:  # HC-SR04 typical range: 2-400cm
-            return -1
-            
+        
         return round(distance, 2)
     
     def get_average_distance(self, samples=3, delay=0.1):
