@@ -1,9 +1,9 @@
 from motors.servo import ServoMotor
-from sensors.ultrasonic import Ultrasonicsensor
+from sensors.ultrasonic import UltrasonicSensor
 
 def main():
     servo = ServoMotor(pin=17)  # 根據你的實際接腳調整 pin 編號
-    ultrasonic = Ultrasonicsensor()
+    ultrasonic = UltrasonicSensor()
     try:
         while True:
             distance = ultrasonic.get_distance()
