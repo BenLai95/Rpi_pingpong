@@ -1,19 +1,48 @@
-from sensors.ultrasonic import UltrasonicSensor
+import RPi.GPIO as GPIO
+import time
 
-def main():
-    ultrasonic = UltrasonicSensor(trigger_pin=3, echo_pin=2)  # 指定腳位
-    try:
-        while True:
-            distance = ultrasonic.get_distance()
-            if distance == -1:
-                print("測距失敗（超出範圍或逾時）")
-            else:
-                print(f"距離: {distance:.2f} cm")
-    except KeyboardInterrupt:
-        print("\n中斷測試")
-    finally:
-        ultrasonic.cleanup()
-        print("已釋放 GPIO 資源")
+# 设置GPIO模式
+GPIO.setmode(GPIO.BCM)
 
-if __name__ == "__main__":
-    main()
+# 定义引脚
+TRIG = 3  # Trig 引脚连接到 GPIO 23
+ECHO = 22  # Echo 引脚连接到 GPIO 24
+
+# 设置引脚方向（IN / OUT）
+GPIO.setup(TRIG, GPIO.OUT)
+GPIO.setup(ECHO, GPIO.IN)
+
+def distance():
+    # 发送高电平信号到 Trig 引脚
+    GPIO.output(TRIG, True)
+
+    # 持续 10 微秒
+    time.sleep(0.00001)
+    GPIO.output(TRIG, False)
+
+    # 记录发射时间
+    while GPIO.input(ECHO) == 0:
+        start_time = time.time()
+
+    # 记录接收时间
+    while GPIO.input(ECHO) == 1:
+        stop_time = time.time()
+
+    # 计算时间差
+    time_elapsed = stop_time - start_time
+
+    # 声速为34300 cm/s，计算距离
+    distance = (time_elapsed * 34300) / 2
+
+    return distance
+
+try:
+    while True:
+        dist = distance()
+        print(f"Measured Distance = {dist:.2f} cm")
+        time.sleep(1)
+
+# 清理GPIO设置
+except KeyboardInterrupt:
+    print("Measurement stopped by User")
+    GPIO.cleanup()
