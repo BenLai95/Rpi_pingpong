@@ -38,6 +38,7 @@ def distance():
 
 try:
     while True:
+        print("测量距离...")
         dist = distance()
         print(f"Measured Distance = {dist:.2f} cm")
         time.sleep(1)
