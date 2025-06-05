@@ -34,8 +34,8 @@ def distance():
 
     time_elapsed = stop_time - start_time
 
-    print("start time = " + start_time)
-    print("stop time =" + stop_time)
+    print("start time = " + str(start_time))
+    print("stop time =" + str(stop_time))
     print(time_elapsed)
     # 声速为34300 cm/s，计算距离
     distance = (time_elapsed * 34300) / 2
