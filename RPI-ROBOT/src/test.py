@@ -41,11 +41,11 @@ def distance():
 
 try:
     while True:
-        #print(GPIO.input(ECHO))
+        print(GPIO.input(ECHO))
         print("测量距离...")
-        dist = distance()
+        '''dist = distance()
         print(f"Measured Distance = {dist:.2f} cm")
-        time.sleep(1)
+        time.sleep(1)'''
 
 # 清理GPIO设置
 except KeyboardInterrupt:
