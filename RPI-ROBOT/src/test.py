@@ -29,6 +29,7 @@ def distance():
     stop_time = 0
     while GPIO.input(ECHO) == 0:
         start_time = time.time()
+        print(start_time)
         if start_time > timeout:
             return -1  # timeout
 
@@ -36,6 +37,7 @@ def distance():
     timeout = time.time() + 0.01
     while GPIO.input(ECHO) == 1:
         stop_time = time.time()
+        print(stop_time)
         if stop_time > timeout:
             return -1  # timeout
 
