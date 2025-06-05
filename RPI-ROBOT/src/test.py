@@ -25,6 +25,8 @@ def distance():
 
     # 等待 ECHO 变高，最多等待 0.01 秒
     timeout = time.time() + 0.01
+    start_time = 0
+    stop_time = 0
     while GPIO.input(ECHO) == 0:
         start_time = time.time()
         if start_time > timeout:
