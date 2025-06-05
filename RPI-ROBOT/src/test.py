@@ -23,8 +23,6 @@ def distance():
     GPIO.output(TRIG, False)
     print("Pulse sent, waiting for echo...")
 
-    start_time = 0
-    stop_time = 0
     while GPIO.input(ECHO) == 0:
         start_time = time.time()
 
