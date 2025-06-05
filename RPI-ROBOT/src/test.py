@@ -41,7 +41,7 @@ def distance():
 
 try:
     while True:
-        print(GPIO.input(ECHO))
+        #print(GPIO.input(ECHO))
         print("测量距离...")
         dist = distance()
         print(f"Measured Distance = {dist:.2f} cm")
