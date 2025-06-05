@@ -5,8 +5,8 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # 定义引脚
-TRIG = 3  # Trig 引脚连接到 GPIO 23
-ECHO = 22  # Echo 引脚连接到 GPIO 24
+TRIG = 3  
+ECHO = 2 
 
 # 设置引脚方向（IN / OUT）
 GPIO.setup(TRIG, GPIO.OUT)
