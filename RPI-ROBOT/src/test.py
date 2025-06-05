@@ -24,12 +24,11 @@ def distance():
     # 记录发射时间
     while GPIO.input(ECHO) == 0:
         start_time = time.time()
-    
-    print("Waiting for echo start...")
+        print("Waiting for echo start...")
     # 记录接收时间
     while GPIO.input(ECHO) == 1:
         stop_time = time.time()
-    print("Waiting for echo end...")
+        print("Waiting for echo end...")
     # 计算时间差
     time_elapsed = stop_time - start_time
     print(f"Echo received, time elapsed: {time_elapsed:.6f} seconds")
