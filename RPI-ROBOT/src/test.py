@@ -52,6 +52,6 @@ try:
             print("Timeout, no echo received.")
         else:
             print(f"Measured Distance = {dist:.2f} cm")
-        time.sleep(1)
+        time.sleep(5)
 finally:
     GPIO.cleanup()
