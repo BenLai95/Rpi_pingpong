@@ -37,10 +37,12 @@ def distance():
     while GPIO.input(ECHO) == 1:
         stop_time = time.time()
         if stop_time > timeout:
-            return -1  # timeout
+            return -2  # timeout
 
     time_elapsed = stop_time - start_time
 
+    print("start time = " + start_time)
+    print("stop time =" + stop_time)
     print(time_elapsed)
     # 声速为34300 cm/s，计算距离
     distance = (time_elapsed * 34300) / 2
@@ -50,6 +52,8 @@ try:
     while True:
         dist = distance()
         if dist == -1:
+            print("Timeout, no echo sent.")
+        elif dist == -2:
             print("Timeout, no echo received.")
         else:
             print(f"Measured Distance = {dist:.2f} cm")
