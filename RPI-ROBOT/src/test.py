@@ -5,14 +5,14 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 # 定义引脚
-TRIG = 3
-ECHO = 2 
+TRIG = 22
+ECHO = 27 
 
 # 设置引脚方向（IN / OUT）
 GPIO.setup(TRIG, GPIO.OUT)
 GPIO.setup(ECHO, GPIO.IN)
 
-def distance():
+'''def distance():
     # 发送高电平信号到 Trig 引脚
     print("Sending pulse...")
     GPIO.output(TRIG, True)
@@ -37,13 +37,14 @@ def distance():
     # 声速为34300 cm/s，计算距离
     distance = (time_elapsed * 34300) / 2
 
-    return distance
+    return distance'''
 
 try:
     while True:
-        print("测量距离...")
+        print(GPIO.input(ECHO))
+        '''print("测量距离...")
         dist = distance()
-        print(f"Measured Distance = {dist:.2f} cm")
+        print(f"Measured Distance = {dist:.2f} cm")'''
         time.sleep(1)
 
 # 清理GPIO设置
