@@ -23,21 +23,14 @@ def distance():
     GPIO.output(TRIG, False)
     print("Pulse sent, waiting for echo...")
 
-    # 等待 ECHO 变高，最多等待 0.01 秒
-    timeout = time.time() + 0.01
     start_time = 0
     stop_time = 0
     while GPIO.input(ECHO) == 0:
         start_time = time.time()
-        if start_time > timeout:
-            return -1  # timeout
 
-    # 等待 ECHO 变低，最多等待 0.01 秒
-    timeout = time.time() + 0.01
     while GPIO.input(ECHO) == 1:
         stop_time = time.time()
-        if stop_time > timeout:
-            return -2  # timeout
+        
 
     time_elapsed = stop_time - start_time
 
