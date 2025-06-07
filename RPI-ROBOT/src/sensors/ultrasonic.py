@@ -1,5 +1,8 @@
 import RPi.GPIO as GPIO
 import time
+import ctypes
+
+libc = ctypes.CDLL('libc.so.6')
 
 class UltrasonicSensor:
     def __init__(self, trigger_pin=22, echo_pin=27):
@@ -13,10 +16,10 @@ class UltrasonicSensor:
     def get_distance(self):
         # 確保 TRIG 為低
         GPIO.output(self.trigger_pin, False)
-        time.usleep(2)
+        libc.usleep(2)
         # 發送 10 微秒高電位脈衝
         GPIO.output(self.trigger_pin, True)
-        time.usleep(10)
+        libc.usleep(10)
         GPIO.output(self.trigger_pin, False)
         print("Pulse sent, waiting for echo...")
 
