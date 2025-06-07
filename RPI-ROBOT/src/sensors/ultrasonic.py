@@ -18,6 +18,7 @@ class UltrasonicSensor:
         GPIO.output(self.trigger_pin, True)
         time.sleep(0.00001)
         GPIO.output(self.trigger_pin, False)
+        time.sleep(0.03)
         print("Pulse sent, waiting for echo...")
 
         # 等待 ECHO 變高
