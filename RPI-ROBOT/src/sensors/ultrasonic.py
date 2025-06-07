@@ -13,10 +13,10 @@ class UltrasonicSensor:
     def get_distance(self):
         # 確保 TRIG 為低
         GPIO.output(self.trigger_pin, False)
-        time.sleep(0.000002)
+        time.usleep(2)
         # 發送 10 微秒高電位脈衝
         GPIO.output(self.trigger_pin, True)
-        time.sleep(0.00001)
+        time.usleep(10)
         GPIO.output(self.trigger_pin, False)
         print("Pulse sent, waiting for echo...")
 
