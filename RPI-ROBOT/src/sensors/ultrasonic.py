@@ -2,102 +2,64 @@ import RPi.GPIO as GPIO
 import time
 
 class UltrasonicSensor:
-    def __init__(self, trigger_pin=3, echo_pin=2):
+    def __init__(self, trigger_pin=22, echo_pin=27):
         self.trigger_pin = trigger_pin
         self.echo_pin = echo_pin
-        
+
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.trigger_pin, GPIO.OUT)
         GPIO.setup(self.echo_pin, GPIO.IN)
-        
-        # Initialize trigger pin to LOW
-        GPIO.output(self.trigger_pin, False)
-        time.sleep(0.1)  # Let sensor settle
-        
+
     def get_distance(self):
-        """
-        Get distance measurement in centimeters
-        Returns -1 if timeout occurs
-        """
-        # Ensure trigger pin is LOW
+        # 確保 TRIG 為低
         GPIO.output(self.trigger_pin, False)
-        time.sleep(0.0002)  # 0.2ms
-
-        # Send 10us pulse
+        time.sleep(0.000002)
+        # 發送 10 微秒高電位脈衝
         GPIO.output(self.trigger_pin, True)
-        time.sleep(0.00001)  # 10us
+        time.sleep(0.00001)
         GPIO.output(self.trigger_pin, False)
-        pulse_start = time.time()
-        
-        while GPIO.input(self.echo_pin) != 1:
-            if GPIO.input(self.echo_pin) == 1:
-                break
-        pulse_end = time.time()
+        print("Pulse sent, waiting for echo...")
 
-        # Calculate distance
-        pulse_duration = pulse_end - pulse_start
-        # Speed of sound = 34300 cm/s
-        # Distance = (Time × Speed) / 2 (divide by 2 for round trip)
-        distance = (pulse_duration * 34300) / 2
-        
-        # Filter out unrealistic readings
-        
+        # 等待 ECHO 變高
+        start_time = time.time()
+        timeout = start_time + 0.02  # 最多等 20ms
+        while GPIO.input(self.echo_pin) == 0:
+            start_time = time.time()
+            if start_time > timeout:
+                print("Timeout waiting for echo HIGH")
+                return -1
+
+        # 等待 ECHO 變低
+        stop_time = time.time()
+        timeout = stop_time + 0.02
+        while GPIO.input(self.echo_pin) == 1:
+            stop_time = time.time()
+            if stop_time > timeout:
+                print("Timeout waiting for echo LOW")
+                return -1
+
+        time_elapsed = stop_time - start_time
+        print("start time = " + str(start_time))
+        print("stop time =" + str(stop_time))
+        print(time_elapsed)
+        # 聲速為34300 cm/s，計算距離
+        distance = (time_elapsed * 34300) / 2
         return round(distance, 2)
-    
-    def get_average_distance(self, samples=3, delay=0.1):
-        """
-        Get average distance over multiple samples for better accuracy
-        """
-        measurements = []
-        
-        for _ in range(samples):
-            distance = self.get_distance()
-            if distance != -1:  # Only include valid measurements
-                measurements.append(distance)
-            time.sleep(delay)
-        
-        if not measurements:
-            return -1  # No valid measurements
-            
-        return round(sum(measurements) / len(measurements), 2)
-    
-    def is_object_detected(self, threshold_cm=20):
-        """
-        Simple object detection within threshold distance
-        """
-        distance = self.get_distance()
-        return distance != -1 and distance <= threshold_cm
-    
+
     def cleanup(self):
-        """Clean up GPIO resources"""
         GPIO.cleanup()
 
-# Example usage
 if __name__ == "__main__":
-    sensor = UltrasonicSensor(trigger_pin=3, echo_pin=2)
-    
+    sensor = UltrasonicSensor(trigger_pin=22, echo_pin=27)
     try:
         while True:
-            # Single measurement
-            distance = sensor.get_distance()
-            
-            if distance == -1:
-                print("Measurement failed (timeout or out of range)")
+            dist = sensor.get_distance()
+            if dist == -1:
+                print("測量失敗")
             else:
-                print(f"Distance: {distance} cm")
-            
-            # Average measurement (more accurate)
-            avg_distance = sensor.get_average_distance(samples=5)
-            if avg_distance != -1:
-                print(f"Average distance: {avg_distance} cm")
-            
-            # Object detection
-            if sensor.is_object_detected(threshold_cm=30):
-                print("Object detected within 30cm!")
-            
+                print("Distance: {:.2f} cm".format(dist))
             time.sleep(1)
-            
     except KeyboardInterrupt:
-        print("\nStopping...")
+        print("測試結束")
     finally:
         sensor.cleanup()
