@@ -39,15 +39,28 @@ def distance():
     distance = (time_elapsed * 34300) / 2
     return distance
 
-try:
-    while True:
-        dist = distance()
-        if dist == -1:
-            print("Timeout, no echo sent.")
-        elif dist == -2:
-            print("Timeout, no echo received.")
-        else:
-            print(f"Measured Distance = {dist:.2f} cm")
-        time.sleep(1)
-finally:
-    GPIO.cleanup()
+if __name__ == "__main__":
+    # 超音波測距測試
+    try:
+        while True:
+            dist = distance()
+            if dist == -1:
+                print("Timeout, no echo sent.")
+            elif dist == -2:
+                print("Timeout, no echo received.")
+            else:
+                print(f"Measured Distance = {dist:.2f} cm")
+            time.sleep(1)
+    finally:
+        GPIO.cleanup()
+
+    # 伺服馬達測試（請確認已連接伺服馬達到正確腳位）
+    from motors.servo import ServoMotor
+    servo = ServoMotor(pin=4)  # 根據實際接線調整 pin
+    try:
+        for angle in [0, 45, 90, 135, 180, 90, 0]:
+            print(f"Set servo angle to {angle}")
+            servo.set_angle(angle)
+            time.sleep(1)
+    finally:
+        servo.cleanup()

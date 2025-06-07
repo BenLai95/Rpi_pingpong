@@ -63,6 +63,25 @@ class CarController:
         self.motorA.set_speed(speed)
         self.motorB.set_speed(-speed)
 
+    def turn(self, delta_x, base_speed=60, max_delta=150):
+        """
+        根據 delta_x 動態調整左右馬達速度差
+        delta_x: 球心與畫面中心的 x 差值
+        base_speed: 前進基礎速度
+        max_delta: delta_x 絕對值大於此值時，達到最大轉彎
+        """
+        # 限制 delta_x 範圍
+        delta_x = max(-max_delta, min(max_delta, delta_x))
+        # 計算左右馬達速度
+        turn_ratio = delta_x / max_delta  # -1 ~ 1
+        left_speed = base_speed - int(turn_ratio * base_speed)
+        right_speed = base_speed + int(turn_ratio * base_speed)
+        # 限制速度範圍
+        left_speed = max(-100, min(100, left_speed))
+        right_speed = max(-100, min(100, right_speed))
+        self.motorA.set_speed(left_speed)
+        self.motorB.set_speed(right_speed)
+
     def stop(self):
         self.motorA.stop()
         self.motorB.stop()
