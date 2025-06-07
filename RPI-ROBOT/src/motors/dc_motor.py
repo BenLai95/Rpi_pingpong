@@ -42,9 +42,9 @@ class DCMotor:
 
 class CarController:
     def __init__(self):
-        # A馬達：PWMA=13, AIN1=26, AIN2=19
+        # A馬達：PWMA=13, AIN1=26, AIN2=6
         # B馬達：PWMB=16, BIN1=21, BIN2=20
-        self.motorA = DCMotor(pwm_pin=13, in1_pin=26, in2_pin=19)
+        self.motorA = DCMotor(pwm_pin=13, in1_pin=26, in2_pin=6)
         self.motorB = DCMotor(pwm_pin=16, in1_pin=21, in2_pin=20)
 
     def forward(self, speed=80):
@@ -89,3 +89,13 @@ class CarController:
     def cleanup(self):
         self.motorA.cleanup()
         self.motorB.cleanup()
+
+if __name__ == "__main__":
+    car = CarController()
+    try:
+        while True:
+            
+    except KeyboardInterrupt:
+        print("結束測試")
+    finally:
+        car.cleanup()
