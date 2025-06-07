@@ -90,7 +90,7 @@ class CarController:
         self.motorA.cleanup()
         self.motorB.cleanup()
 
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     car = CarController()
     try:
         while True:
@@ -98,4 +98,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("結束測試")
     finally:
-        car.cleanup()
+        car.cleanup()'''
