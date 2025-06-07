@@ -18,12 +18,11 @@ class UltrasonicSensor:
         GPIO.output(self.trigger_pin, True)
         time.sleep(0.00001)
         GPIO.output(self.trigger_pin, False)
-        time.sleep(0.03)
         print("Pulse sent, waiting for echo...")
 
         # 等待 ECHO 變高
         start_time = time.time()
-        timeout = start_time + 0.02  # 最多等 20ms
+        timeout = start_time + 0.05  # 最多等 50ms
         while GPIO.input(self.echo_pin) == 0:
             start_time = time.time()
             if start_time > timeout:
