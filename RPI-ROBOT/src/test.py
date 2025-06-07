@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 from motors.servo import ServoMotor
+from motors.dc_motor import CarController  # 新增這行
 
 # 设置GPIO模式
 GPIO.setmode(GPIO.BCM)
@@ -68,6 +69,36 @@ def main(mode):
             print("結束測試")
         finally:
             servo.cleanup()
+    elif mode == 2:
+        car = CarController()
+        try:
+            while True:
+                cmd = input("請輸入指令（w:前進, s:後退, a:左轉, d:右轉, q:停止, e:結束）：").strip().lower()
+                if cmd == 'w':
+                    car.forward()
+                    print("前進")
+                elif cmd == 's':
+                    car.backward()
+                    print("後退")
+                elif cmd == 'a':
+                    car.left()
+                    print("左轉")
+                elif cmd == 'd':
+                    car.right()
+                    print("右轉")
+                elif cmd == 'q':
+                    car.stop()
+                    print("停止")
+                elif cmd == 'e':
+                    print("結束測試")
+                    break
+                else:
+                    print("無效指令，請重新輸入")
+        except KeyboardInterrupt:
+            print("結束測試")
+        finally:
+            car.cleanup()
+        
 
 
 if __name__ == "__main__":
