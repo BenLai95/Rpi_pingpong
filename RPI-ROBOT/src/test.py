@@ -7,7 +7,7 @@ GPIO.setmode(GPIO.BCM)
 
 # 定义引脚
 TRIG = 22
-ECHO = 27 
+ECHO = 27
 
 # 设置引脚方向（IN / OUT）
 GPIO.setup(TRIG, GPIO.OUT)
@@ -40,16 +40,35 @@ def distance():
     distance = (time_elapsed * 34300) / 2
     return distance
 
-def main():
-    try:
-        while True:
-            dist = distance()
-            print("Distance: {:.2f} cm".format(dist))
-            time.sleep(1)  # 每秒測量一次
-    except KeyboardInterrupt:
-        print("測試結束")
-    finally:
-        GPIO.cleanup()  # 清理GPIO設置
+def main(mode):
+    if mode == 0:
+        try:
+            while True:
+                dist = distance()
+                print("Distance: {:.2f} cm".format(dist))
+                time.sleep(1)  # 每秒測量一次
+        except KeyboardInterrupt:
+            print("測試結束")
+        finally:
+            GPIO.cleanup()  # 清理GPIO設置
+    elif mode == 1:
+        servo = ServoMotor(pin=17)  # 根據實際接線調整 pin
+        try:
+            while True:
+                try:
+                    angle = float(input("請輸入要轉到的角度（0~180）："))
+                    if 0 <= angle <= 180:
+                        print(f"Set servo angle to {angle}")
+                        servo.set_angle(angle)
+                    else:
+                        print("請輸入 0~180 之間的數字")
+                except ValueError:
+                    print("請輸入有效的數字")
+        except KeyboardInterrupt:
+            print("結束測試")
+        finally:
+            servo.cleanup()
+
 
 if __name__ == "__main__":
     main()
