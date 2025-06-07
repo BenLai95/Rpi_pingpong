@@ -40,9 +40,21 @@ def distance():
     distance = (time_elapsed * 34300) / 2
     return distance
 
+def main():
+    try:
+        while True:
+            dist = distance()
+            print("Distance: {:.2f} cm".format(dist))
+            time.sleep(1)  # 每秒測量一次
+    except KeyboardInterrupt:
+        print("測試結束")
+    finally:
+        GPIO.cleanup()  # 清理GPIO設置
+
 if __name__ == "__main__":
+    main()
     # 超音波測距測試
-    servo = ServoMotor(pin=17)  # 根據實際接線調整 pin
+    '''servo = ServoMotor(pin=17)  # 根據實際接線調整 pin
     try:
         while True:
             try:
@@ -57,4 +69,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("結束測試")
     finally:
-        servo.cleanup()
+        servo.cleanup()'''
