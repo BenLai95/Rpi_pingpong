@@ -52,6 +52,7 @@ def main():
         GPIO.cleanup()  # 清理GPIO設置
 
 if __name__ == "__main__":
+    GPIO.cleanup()  # 確保在腳本結束時清理GPIO
     main()
     # 超音波測距測試
     '''servo = ServoMotor(pin=17)  # 根據實際接線調整 pin
