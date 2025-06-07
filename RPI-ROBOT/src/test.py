@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 import time
+from motors.servo import ServoMotor
 
 # 设置GPIO模式
 GPIO.setmode(GPIO.BCM)
@@ -41,26 +42,19 @@ def distance():
 
 if __name__ == "__main__":
     # 超音波測距測試
+    servo = ServoMotor(pin17)  # 根據實際接線調整 pin
     try:
         while True:
-            dist = distance()
-            if dist == -1:
-                print("Timeout, no echo sent.")
-            elif dist == -2:
-                print("Timeout, no echo received.")
-            else:
-                print(f"Measured Distance = {dist:.2f} cm")
-            time.sleep(1)
-    finally:
-        GPIO.cleanup()
-
-    # 伺服馬達測試（請確認已連接伺服馬達到正確腳位）
-    from motors.servo import ServoMotor
-    servo = ServoMotor(pin=4)  # 根據實際接線調整 pin
-    try:
-        for angle in [0, 45, 90, 135, 180, 90, 0]:
-            print(f"Set servo angle to {angle}")
-            servo.set_angle(angle)
-            time.sleep(1)
+            try:
+                angle = float(input("請輸入要轉到的角度（0~180）："))
+                if 0 <= angle <= 180:
+                    print(f"Set servo angle to {angle}")
+                    servo.set_angle(angle)
+                else:
+                    print("請輸入 0~180 之間的數字")
+            except ValueError:
+                print("請輸入有效的數字")
+    except KeyboardInterrupt:
+        print("結束測試")
     finally:
         servo.cleanup()
