@@ -1,7 +1,7 @@
 import time
 
 class ServoMotor:
-    def __init__(self, pin=4):
+    def __init__(self, pin=17):
         import RPi.GPIO as GPIO
         self.pin = pin
         GPIO.setmode(GPIO.BCM)

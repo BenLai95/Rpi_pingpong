@@ -42,7 +42,7 @@ def distance():
 
 if __name__ == "__main__":
     # 超音波測距測試
-    servo = ServoMotor(pin17)  # 根據實際接線調整 pin
+    servo = ServoMotor(pin=17)  # 根據實際接線調整 pin
     try:
         while True:
             try:
