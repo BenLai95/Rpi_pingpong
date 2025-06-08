@@ -124,9 +124,9 @@ class PingPongDetector2:
 
         if visualize:
             cv2.line(output, (center_x, 0), (center_x, height), (255, 255, 255), 1)  # 畫中心線
-            cv2.imshow("追蹤結果", output)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            #cv2.imshow("追蹤結果", output)
+            #cv2.waitKey(0)
+            #cv2.destroyAllWindows()
 
         return delta_x
 
