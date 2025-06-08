@@ -116,10 +116,12 @@ class PingPongDetector2:
 
         # 若找到球，畫出圓形並計算偏移
         if selected_center is not None:
+            detected = True
             cv2.circle(output, selected_center, selected_radius, selected_color, 2)
             cv2.circle(output, selected_center, 2, (0, 0, 255), 3)
             delta_x = selected_center[0] - center_x
         else:
+            detected = False
             delta_x = None
 
         if visualize:
@@ -127,8 +129,9 @@ class PingPongDetector2:
             #cv2.imshow("追蹤結果", output)
             #cv2.waitKey(0)
             #cv2.destroyAllWindows()
+            return delta_x, detected, output
 
-        return delta_x, output
+        return delta_x, detected
 
 
     def preprocess_image(self, image):
