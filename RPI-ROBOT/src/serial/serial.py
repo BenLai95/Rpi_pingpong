@@ -2,9 +2,9 @@
 import serial
 import time
 
-ser = serial.Serial('/dev/serial0', 9600, timeout=1)
+ser = serial.serial('/dev/serial0', 9600, timeout=1)
 # 或
-# ser = serial.Serial('/dev/ttyAMA0', 9600, timeout=1)
+# ser = serial.serial('/dev/ttyAMA0', 9600, timeout=1)
 
 if __name__ == '__main__':
     ser.reset_input_buffer()
