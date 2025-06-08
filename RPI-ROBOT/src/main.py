@@ -43,10 +43,11 @@ def main():
             while True:
                 frame = camera.capture_frame()  # 持續擷取影像
                 # 偵測乒乓球
-                delta_x, detected = detector.detect_ball_hsv(frame, visualize=False)
+                delta_x, detected, output = detector.detect_ball_hsv(frame, visualize=True)
                 if detected:
                     print("Ping pong ball detected!")
                     print(f"Delta X: {delta_x}") 
+                    cv2.imwrite("Visualized Output.jpg", output)
                 else:
                     print("No ping pong ball detected.")
                 time.sleep(1)  # 每秒檢查一次，可依需求調整
