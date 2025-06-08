@@ -8,24 +8,30 @@ import numpy as np
 
 def main():
     # 選擇攝影機來源
-    #camera = PiCamera()  # 樹莓派相機
+    camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
+    #camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
 
     detector = PingPongDetector2()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
-    #mode = 0 #拍一張照片並儲存
+    mode = 0
     #mode = 1 #持續偵測乒乓球
-    mode = 2 # 偵測乒乓球
+    #mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
 
     if mode == 0:
         try:
-            while True:
-                frame = camera.capture_frame()
-                
+            for i in range(5):  # 擷取5張影像
+                frame = camera.capture_frame()  # 擷取一張影像
+                cv2.imwrite(f'captured_frame_{i}.jpg', frame)
+                print(f"Captured frame {i} saved.")
+                # 偵測乒乓球    
+                if detector.detect_ball_hsv(frame, visualize=True):
+                    print("Ping pong ball detected!")
+
+
         finally:
             camera.stop()
 
