@@ -2,8 +2,11 @@
 import serial
 import time
 
+ser = serial.Serial('/dev/serial0', 9600, timeout=1)
+# 或
+# ser = serial.Serial('/dev/ttyAMA0', 9600, timeout=1)
+
 if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
     ser.reset_input_buffer()
     while True:
         user_input = input("請輸入要傳送給 Arduino 的內容（按 Enter 跳過）：")
