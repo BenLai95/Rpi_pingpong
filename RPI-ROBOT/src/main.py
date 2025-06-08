@@ -10,14 +10,14 @@ def main():
     # 選擇攝影機來源
     camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    #camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
+    #camera = ImageCamera(image_path='image/visualized_output_3.jpg')  # 使用測試圖片
 
     detector = PingPongDetector2()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
-    mode = 0
-    #mode = 1 #持續偵測乒乓球
+    #mode = 0
+    mode = 1 #持續偵測乒乓球
     #mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
 
@@ -47,7 +47,7 @@ def main():
                     print("Ping pong ball detected!")
                 else:
                     print("No ping pong ball detected.")
-                time.sleep(1)  # 每秒檢查一次，可依需求調整
+                #time.sleep(1)  # 每秒檢查一次，可依需求調整
         except KeyboardInterrupt:
             print("Exiting...")  # 按 Ctrl+C 可中斷程式
         finally:
