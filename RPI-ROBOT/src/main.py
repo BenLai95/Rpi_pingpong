@@ -49,7 +49,7 @@ def main():
                     print(f"Delta X: {delta_x}") 
                 else:
                     print("No ping pong ball detected.")
-                #time.sleep(1)  # 每秒檢查一次，可依需求調整
+                time.sleep(1)  # 每秒檢查一次，可依需求調整
         except KeyboardInterrupt:
             print("Exiting...")  # 按 Ctrl+C 可中斷程式
         finally:
