@@ -128,7 +128,7 @@ class PingPongDetector2:
             #cv2.waitKey(0)
             #cv2.destroyAllWindows()
 
-        return delta_x
+        return delta_x, output
 
 
     def preprocess_image(self, image):

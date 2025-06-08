@@ -27,11 +27,14 @@ def main():
                 frame = camera.capture_frame()  # 擷取一張影像
                 cv2.imwrite(f'captured_frame_{i}.jpg', frame)
                 print(f"Captured frame {i} saved.")
-                # 偵測乒乓球    
-                if detector.detect_ball_hsv(frame, visualize=True):
+                # 偵測乒乓球並取得視覺化結果
+                delta_x, output = detector.detect_ball_hsv(frame, visualize=True)
+                if delta_x is not None:
                     print("Ping pong ball detected!")
-
-
+                    cv2.imwrite(f'visualized_output_{i}.jpg', output)
+                    print(f"Visualized output {i} saved.")
+                else:
+                    print("No ping pong ball detected!")
         finally:
             camera.stop()
 
