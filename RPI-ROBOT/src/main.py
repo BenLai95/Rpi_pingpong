@@ -35,6 +35,8 @@ def main():
                     print(f"Visualized output {i} saved.")
                 else:
                     print("No ping pong ball detected!")
+                    cv2.imwrite(f'visualized_output_{i}.jpg', output)
+                    print(f"Visualized output {i} saved.")
         finally:
             camera.stop()
 
