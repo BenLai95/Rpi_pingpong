@@ -1,57 +1,57 @@
-import RPi.GPIO as GPIO
+import pigpio
 import time
 from motors.servo import ServoMotor
-from motors.dc_motor import CarController  # 新增這行
+from motors.dc_motor import CarController
 
-# 设置GPIO模式
-GPIO.setmode(GPIO.BCM)
+# 初始化 pigpio
+pi = pigpio.pi()
 
 # 定义引脚
 TRIG = 22
 ECHO = 27
 
-# 设置引脚方向（IN / OUT）
-GPIO.setup(TRIG, GPIO.OUT)
-GPIO.setup(ECHO, GPIO.IN)
+# 設置 GPIO 模式
+pi.set_mode(TRIG, pigpio.OUTPUT)
+pi.set_mode(ECHO, pigpio.INPUT)
 
 def distance():
-    # 确保 TRIG 为低
-    GPIO.output(TRIG, False)
-    time.sleep(0.000002)
-    # 发送 10 微秒高电位脉冲
-    GPIO.output(TRIG, True)
-    # 持续 10 微秒
-    time.sleep(0.00001)
-    GPIO.output(TRIG, False)
-    print("Pulse sent, waiting for echo...")
+    # 清除 TRIG
+    pi.write(TRIG, 0)
+    time.sleep(0.002)
 
-    while GPIO.input(ECHO) == 0:
-        start_time = time.time()
+    # 發送精確 10μs 脈衝
+    pi.gpio_trigger(TRIG, 10)  # 發送 10 微秒高電位
 
-    while GPIO.input(ECHO) == 1:
-        stop_time = time.time()
-        
+    start = time.time()
+    timeout = start + 0.01
+    while pi.read(ECHO) == 0:
+        start = time.time()
+        if start > timeout:
+            return -1
 
-    time_elapsed = stop_time - start_time
+    timeout = time.time() + 0.02
+    while pi.read(ECHO) == 1:
+        stop = time.time()
+        if stop > timeout:
+            return -2
 
-    print("start time = " + str(start_time))
-    print("stop time =" + str(stop_time))
-    print(time_elapsed)
-    # 声速为34300 cm/s，计算距离
-    distance = (time_elapsed * 34300) / 2
-    return distance
+    time_elapsed = stop - start
+    return (time_elapsed * 34300) / 2
 
 def main(mode):
     if mode == 0:
         try:
             while True:
                 dist = distance()
-                print("Distance: {:.2f} cm".format(dist))
-                time.sleep(1)  # 每秒測量一次
+                if dist > 0:  # 確認測量成功
+                    print("Distance: {:.2f} cm".format(dist))
+                else:
+                    print("測量失敗，錯誤碼:", dist)
+                time.sleep(1)
         except KeyboardInterrupt:
             print("測試結束")
         finally:
-            GPIO.cleanup()  # 清理GPIO設置
+            pi.stop()  # 清理 pigpio
     elif mode == 1:
         servo = ServoMotor(pin=17)  # 根據實際接線調整 pin
         try:
