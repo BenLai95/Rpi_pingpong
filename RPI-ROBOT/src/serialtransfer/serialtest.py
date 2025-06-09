@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
         if ser.in_waiting > 0:  # 檢查是否有數據可讀
             print("有數據可讀，開始讀取...")
-            line = ser.readall()
+            line = ser.readlines()
             if line:
                 print(line)
         time.sleep(0.1)  # 避免過度輪詢，減少 CPU 使用率
