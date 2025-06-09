@@ -5,18 +5,13 @@ import time
 ser = serial.Serial('/dev/serial0', 9600, timeout=1, write_timeout=1)
 # 或
 # ser = serial.serial('/dev/ttyAMA0', 9600, timeout=1)
-ser.write(b'RPI ready\n')  # 初始化時發送訊息給 Arduino
-print("Serial port opened successfully.")
-
-'''if __name__ == '__main__':
-    ser.reset_input_buffer()
+# ser.write(b'RPI ready\n')  # 初始化時發送訊息給 Arduino
+#print("Serial port opened successfully.")
+if __name__ == '__main__':
+    ser.reset_input_buffer()  # 清空輸入緩衝區
     while True:
-        user_input = input("輸入給 Arduino 的內容：")
-        if user_input.strip():
-            ser.write((user_input + "\n").encode('ascii'))
-
-        if ser.in_waiting > 0:
-            line = ser.readline().decode('utf-8', errors='ignore').rstrip()
+        if ser.in_waiting > 0:  # 檢查是否有數據可讀
+            line = ser.readline()
             if line:
                 print(f"從 Arduino 收到：{line}")
-        # time.sleep(1)  # 若不需要每秒循環可移除'''
+        time.sleep(0.1)  # 避免過度輪詢，減少 CPU 使用率
