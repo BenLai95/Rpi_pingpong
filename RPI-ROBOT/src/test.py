@@ -25,8 +25,6 @@ def distance():
     start = time.time()
     while pi.read(ECHO) == 0:
         start = time.time()
-        
-
     
     while pi.read(ECHO) == 1:
         stop = time.time()
