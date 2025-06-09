@@ -14,5 +14,5 @@ if __name__ == '__main__':
             print("有數據可讀，開始讀取...")
             line = ser.readall()
             if line:
-                print("從 Arduino 收到：{line}")
+                print(f"從 Arduino 收到：{line}")
         time.sleep(0.1)  # 避免過度輪詢，減少 CPU 使用率
