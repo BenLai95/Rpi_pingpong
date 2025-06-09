@@ -11,6 +11,7 @@ if __name__ == '__main__':
     ser.reset_input_buffer()  # 清空輸入緩衝區
     while True:
         if ser.in_waiting > 0:  # 檢查是否有數據可讀
+            print("有數據可讀，開始讀取...")
             line = ser.readall()
             if line:
                 print("從 Arduino 收到：{line}")
