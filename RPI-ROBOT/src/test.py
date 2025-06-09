@@ -23,17 +23,14 @@ def distance():
     pi.gpio_trigger(TRIG, 10)  # 發送 10 微秒高電位
 
     start = time.time()
-    timeout = start + 0.01
     while pi.read(ECHO) == 0:
         start = time.time()
-        if start > timeout:
-            return -1
+        
 
-    timeout = time.time() + 0.02
+    
     while pi.read(ECHO) == 1:
         stop = time.time()
-        if stop > timeout:
-            return -2
+        
 
     time_elapsed = stop - start
     return (time_elapsed * 34300) / 2
