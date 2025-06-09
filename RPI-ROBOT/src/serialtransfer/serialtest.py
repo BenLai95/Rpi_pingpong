@@ -13,8 +13,8 @@ if __name__ == '__main__':
         if user_input.strip():
             ser.write((user_input + "\n").encode('utf-8'))
 
-        '''if ser.in_waiting > 0:
+        if ser.in_waiting > 0:
             line = ser.readline().decode('utf-8', errors='ignore').rstrip()
             if line:
-                print(f"從 Arduino 收到：{line}")'''
+                print(f"從 Arduino 收到：{line}")
         # time.sleep(1)  # 若不需要每秒循環可移除
