@@ -10,6 +10,10 @@ ser = serial.Serial('/dev/ttyS0', 9600)
 if __name__ == '__main__':
     ser.reset_input_buffer()  # 清空輸入緩衝區
     while True:
+        input_data = input("請輸入要發送的數據")
+        if input_data:
+            ser.write(input_data)
+
         if ser.in_waiting > 0:  # 檢查是否有數據可讀
             print("有數據可讀，開始讀取...")
             line = ser.readall()
