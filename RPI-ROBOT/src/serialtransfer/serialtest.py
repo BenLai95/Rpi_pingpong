@@ -2,7 +2,7 @@
 import serial
 import time
 
-ser = serial.Serial('/dev/ttyS0', 9600, timeout=1, write_timeout=1)
+ser = serial.Serial('/dev/ttyS0', 9600)
 # 或
 # ser = serial.serial('/dev/ttyAMA0', 9600, timeout=1)
 # ser.write(b'RPI ready\n')  # 初始化時發送訊息給 Arduino
@@ -14,5 +14,5 @@ if __name__ == '__main__':
             print("有數據可讀，開始讀取...")
             line = ser.readall()
             if line:
-                print(f"從 Arduino 收到：{line}")
+                print(line)
         time.sleep(0.1)  # 避免過度輪詢，減少 CPU 使用率
