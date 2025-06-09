@@ -92,16 +92,18 @@ void loop()
   MotorWriting(-50,-50);
   delay(1000);
   */
-  if (Serial1.available()) {
+  /*if (Serial1.available()) {
     //String msg = Serial1.readStringUntil('\n');
     char c = Serial1.read();
     Serial.print("從 RPi 收到：");
     Serial.println(c);
+  }*/
+  while (Serial1.available()>0){
+    Serial.println(char(Serial1.read()));
   }
-
-  if (Serial.available()) {
+  /*if (Serial.available()) {
     String msg = Serial.readStringUntil('\n');
     Serial1.print("PC 給 Arduino:");
     Serial1.println(msg);
-  }
+  }*/
 }
