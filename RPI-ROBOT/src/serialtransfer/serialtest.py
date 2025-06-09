@@ -37,11 +37,11 @@ if __name__ == '__main__':
     try:
         ser.reset_input_buffer()  # 清空輸入緩衝區
         while True:
-            input_data = input("請輸入要發送的數據: ")
-            if input_data:
+            input_data = input("請輸入要發送的數據 (直接按Enter跳過): ").strip()
+            if input_data:  # 只有當輸入不是空字串時才發送
                 if send_data(input_data):
                     print(f"已發送: {input_data}")
-                
+            
             received = read_data()
             if received:
                 print(f"收到數據: {received}")
