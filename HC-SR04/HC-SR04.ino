@@ -108,9 +108,7 @@ void loop()
 
 void loop() {
   
-  if (Serial1.available()) {
-    String msg = Serial1.readStringUntil('\n');
-    Serial.print("從 RPi 收到：");
-    Serial.println(msg);
+  if (Serial.available()){
+    Serial1.print('a');
   }
 }
