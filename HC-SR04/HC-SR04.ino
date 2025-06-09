@@ -72,7 +72,7 @@ void loop()
     myservo.write(pos);    // 告訴 servo 走到 'pos' 的位置
     delay(15);        // 等待 15ms 讓 servo 走到指定位置
   }*/
-  myservo.write(180);
+  //myservo.write(180);
   /*
   // 反轉 180度，從 180 度旋轉到 0 度，每次 1 度
   for (pos = 180; pos >= 0; pos -= 1)
@@ -94,10 +94,10 @@ void loop()
   delay(1000);
   */
   if (Serial1.available()) {
-    //String msg = Serial1.readStringUntil('\n');
-    char c = Serial1.read();
+    String msg = Serial1.readStringUntil('\n');
+    //char c = Serial1.read();
     Serial.print("從 RPi 收到：");
-    Serial.println(c);
+    Serial.println(msg);
   }
   if (Serial.available()) {
     String msg = Serial.readStringUntil('\n');

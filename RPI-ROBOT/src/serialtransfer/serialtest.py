@@ -11,7 +11,7 @@ if __name__ == '__main__':
     while True:
         user_input = input("輸入給 Arduino 的內容：")
         if user_input.strip():
-            ser.write((user_input + "\n").encode('utf-8'))
+            ser.write((user_input + "\n").encode('ascii'))
 
         if ser.in_waiting > 0:
             line = ser.readline().decode('utf-8', errors='ignore').rstrip()
