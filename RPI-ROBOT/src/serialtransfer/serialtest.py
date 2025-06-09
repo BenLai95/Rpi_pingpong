@@ -2,7 +2,7 @@
 import serial
 import time
 
-ser = serial.Serial('/dev/serial0', 9600, timeout=1)
+ser = serial.Serial('/dev/serial0', 9600, timeout=1, write_timeout=)
 # 或
 # ser = serial.serial('/dev/ttyAMA0', 9600, timeout=1)
 
