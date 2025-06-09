@@ -92,6 +92,9 @@ void loop()
   MotorWriting(-50,-50);
   delay(1000);
   */
-  Serial.print(Serial1.read());
-  Serial1.print(Serial.read());
+  if (Serial1.available()) {
+    char c = Serial1.read();
+    Serial1.write(c);  // Echo 回送
+  }
+  }
 }
