@@ -60,7 +60,7 @@ void setup()
 {
   Serial.begin(9600);
   myservo.attach(24);
-  Serial1.begin(9600);
+  Serial2.begin(9600);
 }
 /*
 void loop()
@@ -107,8 +107,5 @@ void loop()
 }*/
 
 void loop() {
-  
-  if (Serial.available()){
-    Serial1.print('a');
-  }
+  Serial2.println("Hello");
 }
