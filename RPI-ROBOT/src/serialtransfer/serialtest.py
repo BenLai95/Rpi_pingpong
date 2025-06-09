@@ -16,4 +16,5 @@ if __name__ == '__main__':
         user_input = input("輸入給 Arduino 的內容：")
         if user_input.strip():
             ser.write((user_input + "\n").encode('utf-8'))
+            ser.reset_input_buffer()
         # time.sleep(1)  # 若不需要每秒循環可移除

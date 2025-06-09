@@ -92,14 +92,16 @@ void loop()
   MotorWriting(-50,-50);
   delay(1000);
   */
-  if (Serial.available()) {
-    char c = Serial.read();
-    Serial1.write(c);  // 傳給 RPi
+  if (Serial1.available()) {
+    //String msg = Serial1.readStringUntil('\n');
+    char c = Serial1.read();
+    Serial.print("從 RPi 收到：");
+    Serial.println(c);
   }
 
-  // 如果 RPi 傳資料進來，傳給 Serial Monitor，**不要再寫回 Serial1**
-  if (Serial1.available()) {
-    char c = Serial1.read();
-    Serial.write(c);  // 顯示在 Arduino IDE
+  if (Serial.available()) {
+    String msg = Serial.readStringUntil('\n');
+    Serial1.print("PC 給 Arduino:");
+    Serial1.println(msg);
   }
 }
