@@ -62,16 +62,16 @@ void setup()
   myservo.attach(24);
   Serial1.begin(9600);
 }
-
+/*
 void loop()
 {
   
-  /*// 正轉 180度，從 0 度旋轉到 180 度，每次 1 度
+  // 正轉 180度，從 0 度旋轉到 180 度，每次 1 度
   for (pos = 0; pos <= 180; pos += 1)
   {
     myservo.write(pos);    // 告訴 servo 走到 'pos' 的位置
     delay(15);        // 等待 15ms 讓 servo 走到指定位置
-  }*/
+  }
   //myservo.write(180);
   /*
   // 反轉 180度，從 180 度旋轉到 0 度，每次 1 度
@@ -92,7 +92,7 @@ void loop()
   delay(1000);
   MotorWriting(-50,-50);
   delay(1000);
-  */
+  
   if (Serial1.available()) {
     String msg = Serial1.readStringUntil('\n');
     //char c = Serial1.read();
@@ -103,5 +103,14 @@ void loop()
     String msg = Serial.readStringUntil('\n');
     Serial1.print("PC 給 Arduino:");
     Serial1.println(msg);
+  }
+}*/
+
+void loop() {
+  
+  if (Serial1.available()) {
+    String msg = Serial1.readStringUntil('\n');
+    Serial.print("從 RPi 收到：");
+    Serial.println(msg);
   }
 }
