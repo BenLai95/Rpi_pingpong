@@ -7,7 +7,7 @@ class SerialTransfer:
         try:
             self.ser = serial.Serial(
                 port=port,
-                baudrate=baudrate
+                baudrate=9600
             )
             print("Serial port opened successfully")
             self.ser.reset_input_buffer()
