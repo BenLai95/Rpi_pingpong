@@ -1,4 +1,5 @@
 from smbus import SMBus
+import time
 
 class I2CCommunication:
     def __init__(self, address=0x8, bus_no=1):
@@ -92,6 +93,7 @@ if __name__ == '__main__':
             elif msg:
                 comm.send_string(msg)
                 print(f"Sent string: {msg}")
+            time.sleep(0.5) 
             data = comm.read_data()
             if data:
                 print(f"Received data: {data}")
