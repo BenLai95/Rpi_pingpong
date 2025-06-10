@@ -14,7 +14,7 @@
 
 #ifndef TRACK_H
 #define TRACK_H
-int Tp;
+int Tp = 150;
 float pre_error = 0;
 float Kp = 8;
 float Kd = 3;
@@ -60,7 +60,7 @@ void tracking(double error) {
 }  // tracking
 
 void Rotate() {
-  MotorWriting(50,-50);
+  MotorWriting(100,-100);
   delay(500);
   MotorWriting(0,0);
 }
