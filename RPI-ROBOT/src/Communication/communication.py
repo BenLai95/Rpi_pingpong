@@ -89,6 +89,11 @@ if __name__ == '__main__':
             elif msg:
                 comm.send_string(msg)
                 print(f"Sent string: {msg}")
+            data = comm.read_data()
+            if data:
+                print(f"Received data: {data}")
+            else:
+                print("No data received")
     except KeyboardInterrupt:
         print("\n程式結束")
     finally:

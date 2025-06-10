@@ -24,6 +24,8 @@ char buf[128];
 Ultrasonic ultrasonic(22, 23);
 int distance;
 
+String serialInput = "";
+
 void setup() { 
     myservo.attach(24);
     myservo.write(180);
@@ -42,7 +44,7 @@ void loop() {
         char c = Serial.read();
         if (c == '\n') {
             // 收到完整一行，更新回傳資料
-            serialInput = serialInput.trim();  // 移除多餘空白
+            serialInput.trim();
             Serial.print("收到輸入: ");
             Serial.println(serialInput);
         } else {
@@ -61,8 +63,7 @@ void receiveEvent(int nbyte) {
     Serial.println(buf);
 }
 
-// 新增全域變數
-String serialInput = "";
+
 
 // 修改回傳函數
 void requestEvent() {
