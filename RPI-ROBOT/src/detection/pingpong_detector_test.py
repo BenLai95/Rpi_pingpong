@@ -121,6 +121,7 @@ class PingPongDetector2:
             delta_x = selected_center[0] - center_x
         else:
             delta_x = None
+            selected_radius = None
 
         if visualize:
             cv2.line(output, (center_x, 0), (center_x, height), (255, 255, 255), 1)  # 畫中心線
@@ -128,7 +129,7 @@ class PingPongDetector2:
             cv2.waitKey(0)
             cv2.destroyAllWindows()
 
-        return delta_x
+        return delta_x,selected_radius
 
 
     def preprocess_image(self, image):

@@ -1,6 +1,8 @@
 from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
 from detection.pingpong_detector import PingPongDetector
 from detection.pingpong_detector_test import PingPongDetector2
+from serialtransfer import serialtest
+import serial
 import time
 import cv2
 import numpy as np
@@ -8,9 +10,9 @@ import numpy as np
 
 def main():
     # 選擇攝影機來源
-    #camera = PiCamera()  # 樹莓派相機
+    camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
+    #camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
 
     detector = PingPongDetector2()  # 建立乒乓球偵測器
 
@@ -18,8 +20,9 @@ def main():
 
     #mode = 0 #拍一張照片並儲存
     #mode = 1 #持續偵測乒乓球
-    mode = 2 # 偵測乒乓球
+    #mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
+    #mode = 4  # 循跡
 
     if mode == 0:
         try:
@@ -108,7 +111,18 @@ def main():
             cv2.destroyAllWindows()
         finally:
             camera.stop()  # 關閉攝影機，釋放資源
-
+    elif mode == 4:
+        try:
+            detector = PingPongDetector2()  # 建立乒乓球偵測器
+            ser = serial.Serial('/dev/serial0', 9600, timeout=1, write_timeout=1)  # 初始化串口
+            while True:
+                frame = camera.capture_frame()  # 擷取一張影像
+                delta_x,radius = detector.detect_ball(frame, visualize=True)
+                error = 100*delta_x/radius if radius > 0 else -1
+                ser.write('e')
+                ser.write(error)
+        finally:
+            camera.stop()
 
 if __name__ == "__main__":
     main()
