@@ -119,11 +119,11 @@ def main():
                 delta_x,radius = detector.detect_ball_hsv(frame, visualize=False)
                 if delta_x is None or radius is None:
                     print("No ping pong ball detected.")
-                    ser.send_data('none')
+                    ser.send_data('n')
                 else:
                     error = (1000*delta_x)/radius if radius else -1
                     print("Error is",error)
-                    ser.send_data('error')
+                    ser.send_data('e')
                     ser.send_int(error)
         finally:
             camera.stop()
