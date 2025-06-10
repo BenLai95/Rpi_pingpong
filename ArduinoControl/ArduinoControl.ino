@@ -17,6 +17,9 @@ https://www.facebook.com/jasonshow
 #include <Servo.h>
 Servo myservo; // 建立一個 servo 物件，最多可建立 12個 servo
 int pos = 180;   // 設定 Servo 位置的變數
+#include <Wire.h>
+#define ARDUINO_ADDR 0x8
+char buf[128];
 
 Ultrasonic ultrasonic(22, 23);
 int distance;
@@ -26,18 +29,18 @@ void setup()
   myservo.attach(24);
   myservo.write(180);
   Serial.begin(9600);
-  Serial2.begin(9600);
+  Wire.begin(ARDUINO_ADDR);
+  Wire.onReceive(receiveEvent);
 }
 
-
 void loop() {
-  int distance = ultrasonic.read();
-  //Serial.println(distance);
-  if(Serial2.available()){
-    char cmd = Serial2.read();
-    Serial.write(cmd);
-    Serial.println("\nWrited");
-    //Serial2.println(cmd);
-  }
+  delay(100);
+}
 
+void receiveEvent(int nbyte)
+{
+    buf[nbyte] = 0;
+    for (int i = 0; Wire.available(); i++)
+        buf[i] = Wire.read();
+    Serial.println(buf);
 }
