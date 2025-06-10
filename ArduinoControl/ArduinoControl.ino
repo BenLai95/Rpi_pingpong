@@ -59,6 +59,9 @@ void requestEvent() {
         
         // 傳送資料
         Wire.write(serialInput.c_str());
+        
+        // 傳送完成後清空字串
+        serialInput = "";
     } else {
         // 如果沒有輸入，傳送空值標記
         Wire.write("NONE", 4);

@@ -45,26 +45,23 @@ class I2CCommunication:
             print(f"Error reading byte: {e}")
             return None
 
-    def read_data(self, timeout=1.0):
-        """讀取 Arduino 回傳的資料，加入超時機制"""
+    def read_data(self, timeout=1.0, max_bytes=32):
+        """一次讀取多個字節的資料"""
         if not self.bus:
             print("I2C bus not open")
             return None
         try:
-            start_time = time.time()
-            data = []
-            while (time.time() - start_time) < timeout:
-                try:
-                    byte = self.bus.read_byte(self.address)
-                    if byte == 0:
-                        break
-                    data.append(byte)
-                except:
-                    time.sleep(0.01)
-                    continue
-        
-            if data:
-                return ''.join(chr(b) for b in data)
+            # 一次讀取最多 32 bytes 的資料
+            data = self.bus.read_i2c_block_data(self.address, 0, max_bytes)
+            # 轉換成字串，直到遇到 null 終止符號
+            result = []
+            for byte in data:
+                if byte == 0:
+                    break
+                result.append(byte)
+            
+            if result:
+                return ''.join(chr(b) for b in result)
             return None
         except Exception as e:
             print(f"Error reading data: {e}")
