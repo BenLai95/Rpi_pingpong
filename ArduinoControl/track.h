@@ -15,7 +15,9 @@
 #ifndef TRACK_H
 #define TRACK_H
 int Tp;
-double error = 0;
+float pre_error = 0;
+float Kp = 8;
+float Kd = 3;
 #define MotorR_I1 3    // 定義 A1 接腳（右）
 #define MotorR_I2 2    // 定義 A2 接腳（右）
 #define MotorR_PWMR 11 // 定義 ENA (PWM調速) 接腳
@@ -50,8 +52,17 @@ void MotorWriting(double vL, double vR) {
 // Handle negative motor_PWMR value.
 
 // P/PID control Tracking
-void tracking() {
-  
+void tracking(double error) {
+  float derror = error - pre_error;
+  int powercorrection = Kp * error + Kd * derror;
+  MotorWriting(Tp + powercorrection, Tp - powercorrection);
+  pre_error = error;
 }  // tracking
+
+void Rotate() {
+  MotorWriting(50,-50);
+  delay(500);
+  MotorWriting(0,0);
+}
 
 #endif  // TRACK_H
