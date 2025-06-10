@@ -44,21 +44,24 @@ class I2CCommunication:
             print(f"Error reading byte: {e}")
             return None
 
-    def read_data(self):
-        """讀取 Arduino 回傳的資料"""
+    def read_data(self, timeout=1.0):
+        """讀取 Arduino 回傳的資料，加入超時機制"""
         if not self.bus:
             print("I2C bus not open")
             return None
         try:
+            import time
+            start_time = time.time()
             data = []
-            try:
-                while True:
+            while (time.time() - start_time) < timeout:
+                try:
                     byte = self.bus.read_byte(self.address)
                     if byte == 0:
                         break
                     data.append(byte)
-            except:
-                pass
+                except:
+                    time.sleep(0.01)
+                    continue
             
             if data:
                 message = ''.join(chr(b) for b in data)
