@@ -51,7 +51,6 @@ class I2CCommunication:
             print("I2C bus not open")
             return None
         try:
-            import time
             start_time = time.time()
             data = []
             while (time.time() - start_time) < timeout:
@@ -63,14 +62,9 @@ class I2CCommunication:
                 except:
                     time.sleep(0.01)
                     continue
-            
+        
             if data:
-                message = ''.join(chr(b) for b in data)
-                # 解析前綴
-                if message.startswith("S:"):  # Serial input
-                    return ("serial", message[2:])
-                elif message.startswith("D:"):  # Distance
-                    return ("distance", int(message[2:]))
+                return ''.join(chr(b) for b in data)
             return None
         except Exception as e:
             print(f"Error reading data: {e}")

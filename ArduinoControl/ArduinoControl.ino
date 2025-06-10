@@ -49,16 +49,18 @@ void receiveEvent(int nbyte) {
 }
 
 
-
 // 修改回傳函數
 void requestEvent() {
-    String data;
-    if (serialInput != "") {
-        // 如果有序列埠輸入，回傳該輸入
-        data = "S:" + serialInput;
+    // 檢查並傳送序列埠輸入
+    if (serialInput.length() > 0) {
+        // 印出除錯資訊
+        Serial.print("Sending: ");
+        Serial.println(serialInput);
+        
+        // 傳送資料
+        Wire.write(serialInput.c_str());
     } else {
-        // 否則回傳距離數據
-        data = "D:" + String(distance);
+        // 如果沒有輸入，傳送空值標記
+        Wire.write("NONE", 4);
     }
-    Wire.write(data.c_str(), data.length());
 }
