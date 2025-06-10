@@ -8,18 +8,22 @@ class PingPongDetector2:
         self.upper_orange = np.array([25, 255, 255])
 
 
-    def create_hsv_trackbar():
+    def on_trackbar(self, x):
+        # 空的回調函數
+        pass
+
+    def create_hsv_trackbar(self):
         cv2.namedWindow("HSV 調整")
 
         # 建立6個trackbar控制H, S, V的上下界
-        cv2.createTrackbar("H Lower", "HSV 調整", 0, 179, )
-        cv2.createTrackbar("H Upper", "HSV 調整", 30, 179, )
-        cv2.createTrackbar("S Lower", "HSV 調整", 70, 255, )
-        cv2.createTrackbar("S Upper", "HSV 調整", 255, 255, )
-        cv2.createTrackbar("V Lower", "HSV 調整", 70, 255, )
-        cv2.createTrackbar("V Upper", "HSV 調整", 255, 255, )
+        cv2.createTrackbar("H Lower", "HSV 調整", 10, 179, self.on_trackbar)
+        cv2.createTrackbar("H Upper", "HSV 調整", 25, 179, self.on_trackbar)
+        cv2.createTrackbar("S Lower", "HSV 調整", 139, 255, self.on_trackbar)
+        cv2.createTrackbar("S Upper", "HSV 調整", 255, 255, self.on_trackbar)
+        cv2.createTrackbar("V Lower", "HSV 調整", 203, 255, self.on_trackbar)
+        cv2.createTrackbar("V Upper", "HSV 調整", 255, 255, self.on_trackbar)
 
-    def get_trackbar_values():
+    def get_trackbar_values(self):
         h_lower = cv2.getTrackbarPos("H Lower", "HSV 調整")
         h_upper = cv2.getTrackbarPos("H Upper", "HSV 調整")
         s_lower = cv2.getTrackbarPos("S Lower", "HSV 調整")
@@ -72,8 +76,7 @@ class PingPongDetector2:
         height, width = image.shape[:2]
         center_x = width // 2  # 螢幕中心 x 座標
 
-        processed = self.preprocess_image(image)
-        hsv = cv2.cvtColor(processed, cv2.COLOR_BGR2HSV)
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         mask = cv2.inRange(hsv, self.lower_orange, self.upper_orange)
 
         # 消除雜訊
@@ -82,7 +85,7 @@ class PingPongDetector2:
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
         blurred = cv2.GaussianBlur(mask, (9, 9), 2)
 
-        output = processed.copy()
+        output = image.copy()
         selected_center = None
 
         # === 優先找藍色：輪廓外接圓 ===
@@ -93,7 +96,7 @@ class PingPongDetector2:
             if area < 50:
                 continue
             (x, y), radius = cv2.minEnclosingCircle(cnt)
-            if 5 < radius < 50 and area > largest_area:
+            if 5 < radius < 200 and area > largest_area:
                 largest_area = area
                 selected_center = (int(x), int(y))
                 selected_radius = int(radius)
@@ -103,7 +106,7 @@ class PingPongDetector2:
         if selected_center is None:
             circles = cv2.HoughCircles(
                 blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=30,
-                param1=50, param2=15, minRadius=5, maxRadius=100
+                param1=50, param2=15, minRadius=5, maxRadius=200
             )
             if circles is not None:
                 circles = np.uint16(np.around(circles))
@@ -129,7 +132,7 @@ class PingPongDetector2:
             #cv2.imshow("追蹤結果", output)
             #cv2.waitKey(0)
             #cv2.destroyAllWindows()
-            return delta_x, detected, output
+            return delta_x, detected, output ,blurred
 
         return delta_x, detected
 
