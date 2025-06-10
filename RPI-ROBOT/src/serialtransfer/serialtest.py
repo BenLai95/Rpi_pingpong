@@ -22,7 +22,8 @@ class SerialTransfer:
             print("Serial port not open")
             return False
         try:
-            self.ser.write(data.encode('utf-8'))
+            code = str(data).encode('utf-8')
+            self.ser.write(code)
             return True
         except serial.SerialException as e:
             print(f"Error sending data: {e}")

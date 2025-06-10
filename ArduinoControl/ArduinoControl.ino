@@ -33,7 +33,7 @@ void setup()
 void loop() {
   int distance = ultrasonic.read();
   if(Serial2.available()){
-    int s = Serial2.read();
+    int s = Serial2.readBytes();
     Serial.println(s);
   }
 }
