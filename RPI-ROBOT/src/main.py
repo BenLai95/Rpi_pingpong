@@ -1,6 +1,7 @@
 from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
 from detection.pingpong_detector import PingPongDetector
 from detection.pingpong_detector_test import PingPongDetector2
+from Communication.communication import I2CCommunication
 import time
 import cv2
 import numpy as np
@@ -10,16 +11,17 @@ def main():
     # 選擇攝影機來源
     camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    #camera = ImageCamera(image_path='image/visualized_output_4.jpg')  # 使用測試圖片
+    camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
 
     detector = PingPongDetector2()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
-    #mode = 0 # 0: 擷取影像並偵測乒乓球
-    mode = 1 #持續偵測乒乓球
-    #mode = 2 # 偵測乒乓球
+    #mode = 0 #拍一張照片並儲存
+    #mode = 1 #持續偵測乒乓球
+    mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
+    mode = 4  # 循跡
 
     if mode == 0:
         try:
@@ -103,7 +105,24 @@ def main():
             print(f"執行時發生錯誤: {e}")
         finally:
             camera.stop()  # 關閉攝影機，釋放資源
-
+    elif mode == 4:
+        try:
+            detector = PingPongDetector2()  # 建立乒乓球偵測器
+            ser = I2CCommunication()  # 初始化串口傳輸
+            while True:
+                frame = camera.capture_frame()  # 擷取一張影像
+                delta_x,radius = detector.detect_ball_hsv(frame, visualize=False)
+                if delta_x is None or radius is None:
+                    print("No ping pong ball detected.")
+                    ser.send_string('n')
+                else:
+                    error = (1000*delta_x)/radius if radius else -1
+                    print("Error is",error)
+                    ser.send_string('e')
+                    ser.send_string(error)
+        finally:
+            camera.stop()
+        
 
 if __name__ == "__main__":
     main()
