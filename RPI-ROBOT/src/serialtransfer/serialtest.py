@@ -23,6 +23,8 @@ class SerialTransfer:
             return False
         try:
             code = str(data).encode('utf-8')
+            print(code)
+            print('\n')
             self.ser.write(code)
             return True
         except serial.SerialException as e:
