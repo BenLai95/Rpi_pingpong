@@ -16,8 +16,8 @@ def main():
 
     camera.start()  # 啟動攝影機
 
-    #mode = 0
-    mode = 1 #持續偵測乒乓球
+    mode = 0 # 0: 擷取影像並偵測乒乓球
+    #mode = 1 #持續偵測乒乓球
     #mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
 
