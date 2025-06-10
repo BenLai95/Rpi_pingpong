@@ -32,10 +32,12 @@ void setup()
 
 void loop() {
   int distance = ultrasonic.read();
+  //Serial.println(distance);
   if(Serial2.available()){
-    String cmd = Serial2.readStringUntil('\n');
-    Serial.print(cmd);
+    char cmd = Serial2.read();
+    Serial.write(cmd);
     Serial.println("\nWrited");
+    //Serial2.println(cmd);
   }
 
 }

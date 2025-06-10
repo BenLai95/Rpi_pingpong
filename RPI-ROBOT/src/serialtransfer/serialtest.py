@@ -20,7 +20,7 @@ class SerialTransfer:
             print("Serial port not open")
             return False
         try:
-            code = str(data).encode('utf-8')+b'\n'
+            code = str(data).encode('ascii')+b'\n'
             print(code)
             self.ser.write(code)
             return True
@@ -34,7 +34,7 @@ class SerialTransfer:
             return None
         try:
             if self.ser.in_waiting > 0:
-                line = self.ser.readline().decode('utf-8').strip()
+                line = self.ser.readline().decode('ascii').strip()
                 return line
             return None
         except serial.SerialException as e:
