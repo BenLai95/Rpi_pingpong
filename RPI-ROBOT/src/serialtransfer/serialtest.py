@@ -22,7 +22,7 @@ class SerialTransfer:
         try:
             code = str(data)
             print(code)
-            self.ser.write(code)
+            self.ser.write(82)
             return True
         except serial.SerialException as e:
             print(f"Error sending data: {e}")
