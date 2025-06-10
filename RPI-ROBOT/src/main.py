@@ -120,11 +120,12 @@ def main():
                 if delta_x is None or radius is None:
                     print("No ping pong ball detected.")
                     ser.send_data('n')
-                error = (1000*delta_x)/radius if radius > 0 else -1
-                print(error)
-                print('\n')
-                ser.send_data('e')
-                ser.send_int(error)
+                else:
+                    error = (1000*delta_x)/radius if radius else -1
+                    print(error)
+                    print('\n')
+                    ser.send_data('e')
+                    ser.send_int(error)
         finally:
             camera.stop()
 
