@@ -7,7 +7,7 @@ i2c_bus = SMBus(I2C_BUS_NO)
 
 while 1:
     try:
-        message = input("Message to be send: ")
+        message = input("Message to be send: ").encode('utf-8').strip()
     except:
         break
     for a in [ord(c) for c in message]:
