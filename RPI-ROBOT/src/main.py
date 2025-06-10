@@ -116,7 +116,10 @@ def main():
             ser = SerialTransfer()  # 初始化串口傳輸
             while True:
                 frame = camera.capture_frame()  # 擷取一張影像
-                delta_x,radius = detector.detect_ball(frame, visualize=False)
+                delta_x,radius = detector.detect_ball_hsv(frame, visualize=False)
+                if delta_x is None or radius is None:
+                    print("No ping pong ball detected.")
+                    ser.send_data('n')
                 error = (1000*delta_x)/radius if radius > 0 else -1
                 print(error)
                 print('\n')
