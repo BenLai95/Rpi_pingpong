@@ -7,7 +7,6 @@ class PingPongDetector2:
         self.lower_orange = np.array([10, 139, 203])
         self.upper_orange = np.array([25, 255, 255])
 
-
     def on_trackbar(self, x):
         # 空的回調函數
         pass
