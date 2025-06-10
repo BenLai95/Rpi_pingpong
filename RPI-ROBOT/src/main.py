@@ -127,6 +127,7 @@ def main():
                     ser.send_string(error)
         finally:
             camera.stop()
+        
 
 if __name__ == "__main__":
     main()
