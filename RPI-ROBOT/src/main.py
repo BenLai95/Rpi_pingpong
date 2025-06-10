@@ -46,8 +46,8 @@ def main():
         try:
             while True:
                 frame = camera.capture_frame()  # 持續擷取影像
-                # 偵測乒乓球
-                delta_x, detected, output = detector.detect_ball_hsv(frame, visualize=True)
+                # 偵測乒乓球x
+                delta_x, detected, output ,blurred = detector.detect_ball_hsv(frame, visualize=True)
                 if detected:
                     print("Ping pong ball detected!")
                     print(f"Delta X: {delta_x}") 
