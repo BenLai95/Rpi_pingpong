@@ -22,21 +22,12 @@ class SerialTransfer:
             print("Serial port not open")
             return False
         try:
-            code = str(data).encode('utf-8')
-            print(code)
-            print('\n')
+            code = str(data).encode('utf-8')+b'\n'
             self.ser.write(code)
             return True
         except serial.SerialException as e:
             print(f"Error sending data: {e}")
             return False
-
-    def send_int(self, value):
-        """傳送整數資料"""
-        if not isinstance(value, int):
-            print("請傳入整數")
-            return False
-        return self.send_data(str(value))
 
     def read_data(self):
         if not self.ser:
