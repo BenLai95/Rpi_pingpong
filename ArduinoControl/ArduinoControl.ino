@@ -35,5 +35,7 @@ void loop() {
   if(Serial2.available()){
     String cmd = Serial2.readStringUntil('\n');
     Serial.print(cmd);
+    Serial.println("\nWrited");
   }
+
 }

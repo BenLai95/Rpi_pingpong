@@ -3,13 +3,11 @@ import serial
 import time
 
 class SerialTransfer:
-    def __init__(self, port='/dev/ttyS0', baudrate=9600, timeout=1, write_timeout=1):
+    def __init__(self, port='/dev/ttyS0', baudrate=9600):
         try:
             self.ser = serial.Serial(
                 port=port,
-                baudrate=baudrate,
-                timeout=timeout,
-                write_timeout=write_timeout
+                baudrate=baudrate
             )
             print("Serial port opened successfully")
             self.ser.reset_input_buffer()
