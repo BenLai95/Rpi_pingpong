@@ -20,7 +20,7 @@ class SerialTransfer:
             print("Serial port not open")
             return False
         try:
-            code = str(data).encode('ascii')+b'\n'
+            code = str(data)
             print(code)
             self.ser.write(code)
             return True
