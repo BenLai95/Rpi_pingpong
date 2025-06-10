@@ -44,6 +44,34 @@ class I2CCommunication:
             print(f"Error reading byte: {e}")
             return None
 
+    def read_data(self):
+        """讀取 Arduino 回傳的資料"""
+        if not self.bus:
+            print("I2C bus not open")
+            return None
+        try:
+            data = []
+            try:
+                while True:
+                    byte = self.bus.read_byte(self.address)
+                    if byte == 0:
+                        break
+                    data.append(byte)
+            except:
+                pass
+            
+            if data:
+                message = ''.join(chr(b) for b in data)
+                # 解析前綴
+                if message.startswith("S:"):  # Serial input
+                    return ("serial", message[2:])
+                elif message.startswith("D:"):  # Distance
+                    return ("distance", int(message[2:]))
+            return None
+        except Exception as e:
+            print(f"Error reading data: {e}")
+            return None
+
     def close(self):
         if self.bus:
             self.bus.close()

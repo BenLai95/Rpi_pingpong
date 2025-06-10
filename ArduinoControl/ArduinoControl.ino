@@ -24,23 +24,55 @@ char buf[128];
 Ultrasonic ultrasonic(22, 23);
 int distance;
 
-void setup()
-{ 
-  myservo.attach(24);
-  myservo.write(180);
-  Serial.begin(9600);
-  Wire.begin(ARDUINO_ADDR);
-  Wire.onReceive(receiveEvent);
+void setup() { 
+    myservo.attach(24);
+    myservo.write(180);
+    Serial.begin(9600);
+    Wire.begin(ARDUINO_ADDR);
+    Wire.onReceive(receiveEvent);
+    Wire.onRequest(requestEvent);  // 新增請求處理函數
 }
 
 void loop() {
-  delay(100);
+    // 更新距離數據
+    distance = ultrasonic.read();
+    
+    // 檢查序列埠是否有資料
+    while (Serial.available() > 0) {
+        char c = Serial.read();
+        if (c == '\n') {
+            // 收到完整一行，更新回傳資料
+            serialInput = serialInput.trim();  // 移除多餘空白
+            Serial.print("收到輸入: ");
+            Serial.println(serialInput);
+        } else {
+            serialInput += c;
+        }
+    }
+    
+    delay(100);
 }
 
-void receiveEvent(int nbyte)
-{
+void receiveEvent(int nbyte) {
     buf[nbyte] = 0;
-    for (int i = 0; Wire.available(); i++)
+    for (int i = 0; Wire.available(); i++) {
         buf[i] = Wire.read();
+    }
     Serial.println(buf);
+}
+
+// 新增全域變數
+String serialInput = "";
+
+// 修改回傳函數
+void requestEvent() {
+    String data;
+    if (serialInput != "") {
+        // 如果有序列埠輸入，回傳該輸入
+        data = "S:" + serialInput;
+    } else {
+        // 否則回傳距離數據
+        data = "D:" + String(distance);
+    }
+    Wire.write(data.c_str(), data.length());
 }
