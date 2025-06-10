@@ -116,7 +116,7 @@ def main():
             ser = SerialTransfer()  # 初始化串口傳輸
             while True:
                 frame = camera.capture_frame()  # 擷取一張影像
-                delta_x,radius = detector.detect_ball(frame, visualize=True)
+                delta_x,radius = detector.detect_ball(frame, visualize=False)
                 error = (1000*delta_x)/radius if radius > 0 else -1
                 print(error)
                 print('\n')
