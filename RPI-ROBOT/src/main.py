@@ -1,8 +1,7 @@
 from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
 from detection.pingpong_detector import PingPongDetector
 from detection.pingpong_detector_test import PingPongDetector2
-from serialtransfer import serialtest
-import serial
+from serialtransfer.serialtest import SerialTransfer
 import time
 import cv2
 import numpy as np
@@ -22,7 +21,7 @@ def main():
     #mode = 1 #持續偵測乒乓球
     #mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
-    #mode = 4  # 循跡
+    mode = 4  # 循跡
 
     if mode == 0:
         try:
@@ -114,13 +113,15 @@ def main():
     elif mode == 4:
         try:
             detector = PingPongDetector2()  # 建立乒乓球偵測器
-            ser = serial.Serial('/dev/serial0', 9600, timeout=1, write_timeout=1)  # 初始化串口
+            ser = SerialTransfer()  # 初始化串口傳輸
             while True:
                 frame = camera.capture_frame()  # 擷取一張影像
                 delta_x,radius = detector.detect_ball(frame, visualize=True)
-                error = 100*delta_x/radius if radius > 0 else -1
-                ser.write('e')
-                ser.write(error)
+                error = (1000*delta_x)/radius if radius > 0 else -1
+                print(error)
+                print('\n')
+                ser.send_data('e')
+                ser.send_int(error)
         finally:
             camera.stop()
 
