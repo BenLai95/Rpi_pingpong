@@ -188,6 +188,7 @@ def main():
                 print("拍完照")
                 if(ser.read_data() != None):
                     com = ser.read_data()
+                    print(com)
                     if(com == 'r'): #request
                         if(delta_x is not None and radius is not None):
                             ser.send_char('e')
@@ -197,6 +198,8 @@ def main():
                         else:
                             ser.send_char('n')
                             print("No ping pong ball detected.")
+                    else:
+                        print("com != r, com =",com)
                 else:
                     print("data = none")
         except KeyboardInterrupt:
