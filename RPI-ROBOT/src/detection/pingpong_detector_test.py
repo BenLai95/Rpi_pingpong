@@ -86,22 +86,32 @@ class PingPongDetector2:
 
         output = image.copy()
         selected_center = None
+        selected_radius = None
 
-        # === 優先找藍色：輪廓外接圓 ===
+        # === 方法 1：輪廓外接圓 ===
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         largest_area = 0
         for cnt in contours:
             area = cv2.contourArea(cnt)
             if area < 50:
                 continue
-            (x, y), radius = cv2.minEnclosingCircle(cnt)
-            if 5 < radius < 200 and area > largest_area:
-                largest_area = area
-                selected_center = (int(x), int(y))
-                selected_radius = int(radius)
-                selected_color = (255, 0, 0)  # 藍色
+            
+            # 計算輪廓的重心（質心）
+            M = cv2.moments(cnt)
+            if M["m00"] != 0:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+                
+                # 用外接圓估算半徑，但以重心為中心
+                (x, y), radius = cv2.minEnclosingCircle(cnt)
+                
+                if area > largest_area and radius > 5:
+                    largest_area = area
+                    selected_center = (cx, cy)  # 使用重心而非外接圓圓心
+                    selected_radius = int(radius)
+                    selected_color = (255, 0, 0)  # 藍色
 
-        # === 若藍色找不到，再用綠色（霍夫圓） ===
+        # === 方法 2：如果找不到大輪廓，改用霍夫圓 ===
         if selected_center is None:
             circles = cv2.HoughCircles(
                 blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=30,
@@ -116,12 +126,32 @@ class PingPongDetector2:
                         selected_radius = c[2]
                         selected_color = (0, 255, 0)  # 綠色
 
+        # === 方法 3：如果還是找不到，用整個 mask 的重心 ===
+        if selected_center is None:
+            # 計算整個 mask 的重心
+            M = cv2.moments(mask)
+            if M["m00"] > 500:  # 確保有足夠的白色像素
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+                # 估算半徑（用 mask 面積開根號）
+                estimated_radius = int(np.sqrt(M["m00"] / np.pi))
+                
+                selected_center = (cx, cy)
+                selected_radius = max(10, estimated_radius)  # 最小半徑 10
+                selected_color = (0, 255, 255)  # 黃色
+
         # 若找到球，畫出圓形並計算偏移
         if selected_center is not None:
             detected = True
             cv2.circle(output, selected_center, selected_radius, selected_color, 2)
             cv2.circle(output, selected_center, 2, (0, 0, 255), 3)
             delta_x = selected_center[0] - center_x
+            
+            # 加上重心十字線
+            cv2.line(output, (selected_center[0]-10, selected_center[1]), 
+                    (selected_center[0]+10, selected_center[1]), (0, 0, 255), 2)
+            cv2.line(output, (selected_center[0], selected_center[1]-10), 
+                    (selected_center[0], selected_center[1]+10), (0, 0, 255), 2)
         else:
             detected = False
             delta_x = None
@@ -129,12 +159,9 @@ class PingPongDetector2:
 
         if visualize:
             cv2.line(output, (center_x, 0), (center_x, height), (255, 255, 255), 1)  # 畫中心線
-            #cv2.imshow("追蹤結果", output)
-            #cv2.waitKey(0)
-            #cv2.destroyAllWindows()
-            return delta_x, detected, output ,blurred
+            return delta_x, detected, output, blurred
 
-        return delta_x,selected_radius
+        return delta_x, selected_radius
 
 
     def preprocess_image(self, image):
