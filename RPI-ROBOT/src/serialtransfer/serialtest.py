@@ -15,17 +15,17 @@ class SerialTransfer:
             print(f"Error opening serial port: {e}")
             self.ser = None
 
-    def send_data(self, data):
+    def send_string(self, message):
         if not self.ser:
             print("Serial port not open")
             return False
         try:
-            code = str(data)
-            print(code)
-            self.ser.write(b"1")
+            data = str(message)
+            print(f"Sending string: {data}")
+            self.ser.write(data.encode('ascii') + b'\n')
             return True
         except serial.SerialException as e:
-            print(f"Error sending data: {e}")
+            print(f"Error sending string: {e}")
             return False
 
     def read_data(self):
@@ -51,14 +51,13 @@ if __name__ == '__main__':
     st = SerialTransfer()
     try:
         while True:
-            input_data = input("請輸入要發送的數據 (直接按Enter跳過): ").strip()
-            if input_data:
-                if st.send_data(input_data):
-                    print(f"已發送: {input_data}")
+            s = input("請輸入字串 (直接按Enter跳過): ").strip()
+            if s:
+                st.send_string(s)
 
-            received = st.read_data()
-            if received:
-                print(f"收到數據: {received}")
+            rec = st.read_data()
+            if rec:
+                print(f"收到數據: {rec}")
 
             time.sleep(0.1)
     except KeyboardInterrupt:
