@@ -111,6 +111,7 @@ def main():
             detector = PingPongDetector2()  # 建立乒乓球偵測器
             ser = SerialTransfer()  # 初始化串口傳輸
             ser.send_char('s') 
+            print(ser.read_data())
             while True:
                 frame = camera.capture_frame()  # 擷取一張影像
                 delta_x,radius = detector.detect_ball_hsv(frame, visualize=False)

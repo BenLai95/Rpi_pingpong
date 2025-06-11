@@ -23,6 +23,7 @@ void loop() {
     char s = Serial.read();
     if (s == 's') {
       running = 1;
+      Serial.write(s);
     }
     while (running) {
       myservo.write(90);
