@@ -47,6 +47,7 @@ class I2CCommunication:
             import struct
             packed = struct.pack('<f', float(value))
             for b in packed:
+                print("b is",b,'\n')
                 self.bus.write_byte(self.address, b)
             return True
         except Exception as e:

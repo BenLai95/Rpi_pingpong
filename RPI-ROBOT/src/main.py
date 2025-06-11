@@ -17,11 +17,11 @@ def main():
 
     camera.start()  # 啟動攝影機
 
-    mode = 0 #拍一張照片並儲存
+    #mode = 0 #拍一張照片並儲存
     #mode = 1 #持續偵測乒乓球
     #mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
-    #mode = 4  # 循跡
+    mode = 4  # 循跡
 
     if mode == 0:
         try:

@@ -27,12 +27,6 @@ void setup() {
 void loop() {
   // 更新距離數據
   distance = ultrasonic.read();
-  if (hasFloat) {
-    // 收到新的 float 存放在 error
-    Serial.print("Recv float: ");
-    Serial.println(error);
-    hasFloat = false;
-  }
   // 檢查序列埠是否有資料
   /*while (Serial.available() > 0) {
         char c = Serial.read();
@@ -45,11 +39,11 @@ void loop() {
             serialInput += c;
         }
     }*/
-  tracking(error);
-  if(buf[0]=='n'){
+  //tracking(error);
+  /*if(buf[0]=='n'){
     error = 0;
     Rotate();
-  }
+  }*/
 }
 
 void receiveEvent(int nbyte) {
@@ -59,6 +53,7 @@ void receiveEvent(int nbyte) {
         u.b[i] = Wire.read();
       }
       error = u.f;
+      Serial.println(error);
       hasFloat = false;
   }
   else{
