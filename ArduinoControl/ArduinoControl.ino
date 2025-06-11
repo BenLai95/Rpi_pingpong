@@ -7,7 +7,7 @@ int pos = 180;  // 設定 Servo 位置的變數
 #define ARDUINO_ADDR 0x8
 
 float error = 0;
-byte buf[8];
+char buf[128];
 bool hasFloat = false;
 
 Ultrasonic ultrasonic(22, 23);
@@ -51,16 +51,24 @@ void receiveEvent(int nbyte) {
       union { byte b[4]; float f; } u;
       for (int i = 0; i < 4; i++) {
         u.b[i] = Wire.read();
+        Serial.print("Float byte is ");
+        Serial.println(int(u.b[i]));
       }
       error = u.f;
-      Serial.println(error);
       hasFloat = false;
   }
   else{
     buf[nbyte] = 0;
     for(int i=0;i<nbyte;i++){
       buf[i] = Wire.read();
+      Serial.print("Buf byte is ");
+      Serial.println(int(buf[i]));
     }
+    if(buf[0]=='e'){
+      hasFloat = 1;
+    }
+    Serial.print("Buf is ");
+    Serial.println(buf);
   }
 }
 
