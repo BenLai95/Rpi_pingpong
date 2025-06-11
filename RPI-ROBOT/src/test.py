@@ -1,8 +1,8 @@
 from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
-from detection.pingpong_detector import PingPongDetector
+from detection.pingpong_detector import PingPongDetector1
 from detection.pingpong_detector_test import PingPongDetector2
-from Communication.communication import I2CCommunication
-from serialtransfer.serialtest import SerialTransfer
+#from Communication.communication import I2CCommunication
+#from serialtransfer.serialtest import SerialTransfer
 import time
 import cv2
 import numpy as np
@@ -12,9 +12,9 @@ def main():
     # 選擇攝影機來源
     #camera = PiCamera()  # 樹莓派相機
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
-    camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
+    camera = ImageCamera(image_path='image/captured_frame_1.jpg')  # 使用測試圖片
 
-    detector = PingPongDetector()  # 建立乒乓球偵測器
+    detector = PingPongDetector2()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
@@ -24,6 +24,7 @@ def main():
     mode = 3 # 偵測乒乓球 + HSV調整
     #mode = 4  # 循跡
     #mode = 5  # 循跡 + 遠端控制
+    #mode = 6  # 輪廓特徵偵測
 
     if mode == 0:
         try:
@@ -151,6 +152,30 @@ def main():
                             print("No ping pong ball detected.")
         except KeyboardInterrupt:
             ser.send_char('p')
+        finally:
+            camera.stop()
+    elif mode == 6:  # 輪廓特徵偵測
+        try:
+            frame = camera.capture_frame()
+            detector = PingPongDetector2()
+            
+            while True:
+                delta_x, detected, output, processed = detector.detect_ball_contour(frame, visualize=True)
+                
+                cv2.imshow("原圖", frame)
+                cv2.imshow("處理後", processed)
+                cv2.imshow("偵測結果", output)
+                
+                if detected:
+                    print(f"偵測到球！Delta X: {delta_x}")
+                else:
+                    print("未偵測到球")
+                
+                key = cv2.waitKey(1)
+                if key == 27:  # ESC
+                    break
+                    
+            cv2.destroyAllWindows()
         finally:
             camera.stop()
 

@@ -214,3 +214,167 @@ class PingPongDetector2:
                 break
 
         cv2.destroyAllWindows()
+
+    def detect_ball_contour(self, image, visualize=False):
+        height, width = image.shape[:2]
+        center_x = width // 2
+        
+        # 轉灰階並模糊
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (9, 9), 2)
+        
+        # 使用自適應閾值，對光線變化更穩定
+        thresh = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                       cv2.THRESH_BINARY_INV, 11, 2)
+        
+        # 尋找輪廓
+        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        output = image.copy()
+        selected_center = None
+        selected_radius = None
+        best_score = 0
+        
+        for cnt in contours:
+            area = cv2.contourArea(cnt)
+            if area < 100:  # 過濾太小的輪廓
+                continue
+                
+            # 計算輪廓的凸包
+            hull = cv2.convexHull(cnt)
+            hull_area = cv2.contourArea(hull)
+            
+            # 計算輪廓的外接圓
+            (x, y), radius = cv2.minEnclosingCircle(cnt)
+            circle_area = np.pi * (radius ** 2)
+            
+            # 計算輪廓長度
+            perimeter = cv2.arcLength(cnt, True)
+            
+            # === 多重特徵評分 ===
+            # 1. 面積比例：實際面積 vs 外接圓面積
+            area_ratio = area / circle_area if circle_area > 0 else 0
+            
+            # 2. 凸性：輪廓面積 vs 凸包面積（越接近1越凸）
+            convexity = area / hull_area if hull_area > 0 else 0
+            
+            # 3. 圓度：基於周長的圓度計算
+            circularity = 4 * np.pi * area / (perimeter * perimeter) if perimeter > 0 else 0
+            
+            # 4. 長寬比：檢查是否接近圓形
+            rect = cv2.minAreaRect(cnt)
+            w, h = rect[1]
+            aspect_ratio = min(w, h) / max(w, h) if max(w, h) > 0 else 0
+            
+            # === 綜合評分（權重可調整） ===
+            score = (area_ratio * 0.3 +      # 30% 面積比例
+                    convexity * 0.2 +        # 20% 凸性
+                    circularity * 0.3 +      # 30% 圓度
+                    aspect_ratio * 0.2)      # 20% 長寬比
+            
+            # 條件：半徑合理 + 綜合評分夠高
+            if 10 < radius < 200 and score > 0.4 and score > best_score:
+                best_score = score
+                
+                # 使用重心作為中心
+                M = cv2.moments(cnt)
+                if M["m00"] != 0:
+                    cx = int(M["m10"] / M["m00"])
+                    cy = int(M["m01"] / M["m00"])
+                    selected_center = (cx, cy)
+                    selected_radius = int(radius)
+                    
+                    if visualize:
+                        # 畫出評分資訊
+                        cv2.putText(output, f"Score:{score:.2f}", (cx-50, cy-30), 
+                                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
+        
+        # 結果處理
+        if selected_center is not None:
+            detected = True
+            delta_x = selected_center[0] - center_x
+            
+            if visualize:
+                # 畫圓和重心
+                cv2.circle(output, selected_center, selected_radius, (0, 255, 0), 2)
+                cv2.circle(output, selected_center, 2, (0, 0, 255), 3)
+                # 畫十字線
+                cv2.line(output, (selected_center[0]-15, selected_center[1]), 
+                        (selected_center[0]+15, selected_center[1]), (0, 0, 255), 2)
+                cv2.line(output, (selected_center[0], selected_center[1]-15), 
+                        (selected_center[0], selected_center[1]+15), (0, 0, 255), 2)
+                # 畫中心線
+                cv2.line(output, (center_x, 0), (center_x, height), (255, 255, 255), 1)
+                
+                return delta_x, detected, output, thresh
+        else:
+            detected = False
+            delta_x = None
+            if visualize:
+                cv2.line(output, (center_x, 0), (center_x, height), (255, 255, 255), 1)
+                return delta_x, detected, output, thresh
+        
+        return delta_x, selected_radius
+
+    def detect_ball_edge(self, image, visualize=False):
+        height, width = image.shape[:2]
+        center_x = width // 2
+        
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blurred = cv2.GaussianBlur(gray, (5, 5), 1.5)
+        
+        # Canny 邊緣檢測，參數可調整
+        edges = cv2.Canny(blurred, 30, 100)
+        
+        # 尋找輪廓
+        contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        output = image.copy()
+        selected_center = None
+        selected_radius = None
+        
+        for cnt in contours:
+            if len(cnt) < 5:  # 至少需要5個點才能擬合橢圓
+                continue
+                
+            area = cv2.contourArea(cnt)
+            if area < 50:
+                continue
+            
+            try:
+                # 擬合橢圓（即使是不完整弧段也能擬合）
+                ellipse = cv2.fitEllipse(cnt)
+                (cx, cy), (w, h), angle = ellipse
+                
+                # 檢查橢圓是否接近圓形
+                aspect_ratio = min(w, h) / max(w, h) if max(w, h) > 0 else 0
+                avg_radius = (w + h) / 4  # 平均半徑
+                
+                if aspect_ratio > 0.7 and 10 < avg_radius < 200:
+                    selected_center = (int(cx), int(cy))
+                    selected_radius = int(avg_radius)
+                    
+                    if visualize:
+                        # 畫橢圓
+                        cv2.ellipse(output, ellipse, (0, 255, 0), 2)
+                        break
+                        
+            except cv2.error:
+                continue
+    
+        # 結果處理同上...
+        if selected_center is not None:
+            detected = True
+            delta_x = selected_center[0] - center_x
+            
+            if visualize:
+                cv2.circle(output, selected_center, 2, (0, 0, 255), 3)
+                cv2.line(output, (center_x, 0), (center_x, height), (255, 255, 255), 1)
+                return delta_x, detected, output, edges
+        else:
+            detected = False
+            delta_x = None
+            if visualize:
+                return delta_x, detected, output, edges
+    
+        return delta_x, selected_radius
