@@ -15,14 +15,15 @@ void setup() {
   myservo.attach(24);
   myservo.write(90);
   Serial.begin(9600);
+  Serial2.begin(9600);
   myservo.write(170);
 }
 
 void loop() {
-  while (Serial.available()) {
-    String s = Serial.readStringUntil('\n');
-    Serial.println("收到指令: " + s); // 主動回傳收到的指令
-    if (s[0] == 's') {
+  while (Serial2.available()) {
+    char s = Serial2.read();
+    Serial.println(s);
+    /*if (s == 's') {
       running = 1;
     }
     if (running) {
@@ -34,17 +35,20 @@ void loop() {
       } else {
         distance = ultrasonic.read();
         tracking(error);
-        if (s[0] == 'n') {
+        if (s == 'n') {
           error = 0;
           Rotate();
-        }
-        if (s[0] == 'p') {
+        } else if (s == 'p') {
           running = 0;
-        } else if (s[0] == 'e') {
+        } else if (s == 'e') {
           hasFloat = 1;
         }
       }
-    }
+    }*/
   }
   MotorWriting(0, 0);
+}
+
+void Processing(){
+
 }

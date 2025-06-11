@@ -3,7 +3,7 @@ import serial
 import time
 
 class SerialTransfer:
-    def __init__(self, port='/dev/ttyACM0' ,baudrate=9600):
+    def __init__(self, port='/dev/ttyUSB0' ,baudrate=9600):
         try:
             self.ser = serial.Serial(
                 port=port,
