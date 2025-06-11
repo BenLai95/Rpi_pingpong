@@ -164,7 +164,7 @@ def main():
                 delta_x, radius = detector.detect_ball_hsv(frame, visualize=False)
                 if delta_x is None or radius is None:
                     print("No ping pong ball detected.")
-                    ser.send_char('n'+"\n")
+                    ser.send_char('n')
                 else:
                     error = delta_x/radius if radius else -1
                     print("Error is ",error)
