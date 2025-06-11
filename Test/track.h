@@ -16,8 +16,8 @@
 #define TRACK_H
 int Tp = 150;
 float pre_error = 0;
-float Kp = 50;
-float Kd = 8;
+float Kp = 100;
+float Kd = 0;
 #define MotorR_I1 3    // 定義 A1 接腳（右）
 #define MotorR_I2 2    // 定義 A2 接腳（右）
 #define MotorR_PWMR 11 // 定義 ENA (PWM調速) 接腳
@@ -50,6 +50,12 @@ void MotorWriting(double vL, double vR) {
   }
   if(vR > 255){
     vR = 255;
+  }
+  if(vL < 100 && vL > 0){
+    vL = 100;
+  }
+  if(vR < 100 && vL > 0){
+    vR = 100;
   }
   analogWrite(MotorL_PWML, vL);
   analogWrite(MotorR_PWMR, vR);
