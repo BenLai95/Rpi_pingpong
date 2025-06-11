@@ -16,9 +16,8 @@
 #define TRACK_H
 int Tp = 150;
 float pre_error = 0;
-float Kp = 4;
-float Kd = 3;
-float adj = 1;
+float Kp = 8;
+float Kd = 5;
 #define MotorR_I1 3    // 定義 A1 接腳（右）
 #define MotorR_I2 2    // 定義 A2 接腳（右）
 #define MotorR_PWMR 11 // 定義 ENA (PWM調速) 接腳
@@ -61,10 +60,9 @@ void tracking(double error) {
 }  // tracking
 
 void Rotate() {
-  MotorWriting(200,-200);
-  delay(100);
+  MotorWriting(100,-100);
+  delay(500);
   MotorWriting(0,0);
-  delay(100);
 }
 
 #endif  // TRACK_H

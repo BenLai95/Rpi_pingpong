@@ -113,15 +113,14 @@ def main():
             ser.send_char('s') 
             print(ser.read_data())
             while True:
-                print("Sented Data is :",ser.read_data())
                 frame = camera.capture_frame()  # 擷取一張影像
-                delta_x,radius = detector.detect_ball_hsv(frame, visualize=False)
+                delta_x, radius = detector.detect_ball_hsv(frame, visualize=False)
                 if delta_x is None or radius is None:
                     print("No ping pong ball detected.")
-                    ser.send_char('n')
+                    ser.send_char('n'+"\n")
                 else:
                     error = delta_x/radius if radius else -1
-                    print("Error is",error,"\n")
+                    print("Error is ",error)
                     ser.send_char('e')
                     ser.send_float(float(error))
                     print("radius = ",radius,"\n")
