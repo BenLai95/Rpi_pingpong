@@ -22,15 +22,17 @@ void setup() {
 void loop() {
   while (Serial2.available()) {
     char s = Serial2.read();
-    Serial.println(s);
-    /*if (s == 's') {
+    if (s == 's') {
       running = 1;
+      Serial.println("Start Running");
     }
     if (running) {
       myservo.write(90);
       if (hasFloat) {
         String f = Serial.readStringUntil('\n');
         error = f.toFloat();
+        Serial.print("Error is: ");
+        Serial.println(error);
         hasFloat = 0;
       } else {
         distance = ultrasonic.read();
@@ -44,7 +46,7 @@ void loop() {
           hasFloat = 1;
         }
       }
-    }*/
+    }
   }
   MotorWriting(0, 0);
 }
