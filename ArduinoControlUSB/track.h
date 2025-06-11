@@ -45,6 +45,18 @@ void MotorWriting(double vL, double vR) {
     digitalWrite(MotorL_I4, LOW);
     vL = -vL;
   }
+  if(vL>255){
+    vL = 255;
+  }
+  if(vR>255){
+    vR = 255;
+  }
+  if(vR<60 && vR >0){
+    vR = 60;
+  }
+  if(vL<60 && vL >0){
+    vL = 60;
+  }
   analogWrite(MotorL_PWML, vL);
   analogWrite(MotorR_PWMR, vR);
 }  // MotorWriting
@@ -61,7 +73,7 @@ void tracking(double error) {
 
 void Rotate() {
   MotorWriting(100,-100);
-  delay(500);
+  delay(100);
   MotorWriting(0,0);
 }
 
