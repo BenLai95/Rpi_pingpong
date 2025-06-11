@@ -42,14 +42,11 @@ void loop() {
         Serial.println(error);
         tracking(error);
         hasFloat = 0;
-        delay(500);
       } else {
         distance = ultrasonic.read();
-        MotorWriting(0, 0);
       }
     }
   }
-  MotorWriting(0, 0);
 }
 
 void Processing() {

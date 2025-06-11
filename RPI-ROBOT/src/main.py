@@ -121,9 +121,10 @@ def main():
                     ser.send_char('n')
                 else:
                     error = delta_x/radius if radius else -1
-                    print("Error is",error)
+                    print("Error is",error,"\n")
                     ser.send_char('e')
                     ser.send_float(float(error))
+                    print("radius = ",radius,"\n")
                 time.sleep(1)
         except KeyboardInterrupt:
             ser.send_char('p')
