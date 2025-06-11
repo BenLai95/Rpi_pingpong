@@ -111,7 +111,6 @@ def main():
             detector = PingPongDetector2()  # 建立乒乓球偵測器
             ser = SerialTransfer()  # 初始化串口傳輸
             ser.send_char('s') 
-            print(ser.read_data())
             while True:
                 print("Sented Data is :",ser.read_data())
                 frame = camera.capture_frame()  # 擷取一張影像
