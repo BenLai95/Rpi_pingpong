@@ -129,7 +129,30 @@ def main():
             ser.send_char('p')
         finally:
             camera.stop()
-        
+    elif mode == 5:
+        try:
+            detector = PingPongDetector2()  # 建立乒乓球偵測器
+            ser = SerialTransfer()  # 初始化串口傳輸
+            ser.send_char('s') 
+            print(ser.read_data())
+            while True:
+                frame = camera.capture_frame()  # 擷取一張影像
+                delta_x, radius = detector.detect_ball_hsv(frame, visualize=False)
+                error = delta_x/radius if radius else -1
+                if(ser.read_data() != None):
+                    com = ser.read_data()
+                    if(com == 'r'): #request
+                        if(delta_x is not None and radius is not None):
+                            ser.send_char('e')
+                            ser.send_float(float(error))
+                            print("Error is ",error)
+                        else:
+                            ser.send_char('n')
+                            print("No ping pong ball detected.")
+        except KeyboardInterrupt:
+            ser.send_char('p')
+        finally:
+            camera.stop()
 
 if __name__ == "__main__":
     main()
