@@ -21,11 +21,11 @@ void setup() {
 void loop() {
   while (Serial.available()) {
     String s = Serial.readStringUntil('\n');
-    Serial.write(s[0]);
+    Serial.println("收到指令: " + s); // 主動回傳收到的指令
     if (s[0] == 's') {
       running = 1;
     }
-    while (running) {
+    if (running) {
       myservo.write(90);
       if (hasFloat) {
         String f = Serial.readStringUntil('\n');

@@ -85,14 +85,14 @@ if __name__ == '__main__':
     st = SerialTransfer()
     try:
         while True:
-            f = input("請輸入浮點數 (直接按Enter跳過): ").strip()
-            if f:
-                st.send_float(f)
-
+            cmd = input("請輸入指令: ").strip()
+            if cmd:
+                st.send_string(cmd)
             rec = st.read_data()
             if rec:
                 print(f"收到數據: {rec}")
-
+            else:
+                print("未收到回應")
             time.sleep(0.1)
     except KeyboardInterrupt:
         print("\n程式結束")
