@@ -45,6 +45,23 @@ class SerialTransfer:
             print(f"Error sending char: {e}")
             return False
 
+    def send_float(self, value):
+        if not self.ser:
+            print("Serial port not open")
+            return False
+        try:
+            f = float(value)
+            data = f"{f:.3f}"             # 保留 3 位小數，可自行調整
+            print(f"Sending float: {data}")
+            self.ser.write(data.encode('ascii') + b'\n')
+            return True
+        except ValueError:
+            print("Error: provided value is not a float")
+            return False
+        except serial.SerialException as e:
+            print(f"Error sending float: {e}")
+            return False
+
     def read_data(self):
         if not self.ser:
             print("Serial port not open")
@@ -68,10 +85,9 @@ if __name__ == '__main__':
     st = SerialTransfer()
     try:
         while True:
-
-            c = input("請輸入單一字元 (直接按Enter跳過): ").strip()
-            if c:
-                st.send_char(c[0])
+            f = input("請輸入浮點數 (直接按Enter跳過): ").strip()
+            if f:
+                st.send_float(f)
 
             rec = st.read_data()
             if rec:

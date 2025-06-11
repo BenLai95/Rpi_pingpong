@@ -19,7 +19,14 @@ void setup() {
 
 void loop() {
   while (Serial.available()) {
-    char s = Serial.read();
+      String s = Serial.readStringUntil('\n');
+      float f = s.toFloat();
+      if (s.length() > 0) {
+        Serial.print("Got float: ");
+        Serial.println(f);
+        myservo.write((int)f);
+      }
+    /*char s = Serial.read();
     if (s == 's') {
       running = 1;
     }
@@ -28,16 +35,19 @@ void loop() {
       if (s >= '0' && s <= '9') {
         myservo.write(10 * (s - '0'));
       }
-      /*tracking(error);
-    if (buf[0] == 'n') {
-      error = 0;
-      Rotate();
-    }*/
-      if (s == 'p') {
-        running = 0;
-      } else if (s == 'e') {
-        hasFloat = 1;
-      }
-    }
+      */
+    /*tracking(error);
+if (buf[0] == 'n') {
+  error = 0;
+  Rotate();
+}*/
+    /*
+   if (s == 'p') {
+     running = 0;
+   } else if (s == 'e') {
+     hasFloat = 1;
+   }
+ }*/
   }
+  MotorWriting(0,0);
 }
