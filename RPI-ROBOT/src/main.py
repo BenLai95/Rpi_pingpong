@@ -110,7 +110,8 @@ def main():
         try:
             detector = PingPongDetector2()  # 建立乒乓球偵測器
             ser = SerialTransfer()  # 初始化串口傳輸
-            ser.send_string('s') 
+            cmd = 's'
+            ser.send_string(cmd) 
             print(ser.read_data())
             while True:
                 print("Sented Data is :",ser.read_data())
