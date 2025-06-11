@@ -50,7 +50,21 @@ void loop() {
         error_rotating(error);  // 使用 error 來調整伺服馬達
       }else if(radius >= 50){
         distance = ultrasonic.read();//寫到這邊還沒寫完
-
+        if(distance<=10 || distance>=30){
+          MotorWriting(70,70);
+        }else{
+          myservo.write(120);
+          delay(500);
+          myservo.write(150);
+          delay(500);
+          myservo.write(180);
+          delay(500);
+          myservo.write(150);
+          delay(500);
+          myservo.write(120);
+          delay(500);
+          myservo.write(90);
+        }
       hasFloat = false;
     }
   }
