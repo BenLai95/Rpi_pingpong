@@ -77,19 +77,65 @@ def main():
         try:
             frame = camera.capture_frame()  # 擷取一張影像
             detector = PingPongDetector2()  # 建立乒乓球偵測器
+            height, width = frame.shape[:2]
+            center_x = width // 2  # 螢幕中心 x 座標
 
             # 創建HSV調整視窗
             detector.create_hsv_trackbar()
 
             while True:
                 # 取得當前 HSV 值並進行偵測
-                delta_x, detected, output, blurred = detector.detect_ball_hsv(frame, visualize=True)
-                
-                # 取得目前 trackbar 參數並印出
                 lower, upper = detector.get_trackbar_values()
+                hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+                mask = cv2.inRange(hsv, lower, upper)
+                kernel = np.ones((7, 7), np.uint8)
+                mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
+                mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
+                blurred = cv2.GaussianBlur(mask, (9, 9), 2)
+                output = frame.copy()
+                selected_center = None
+
+                # === 優先找藍色：輪廓外接圓 ===
+                contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                largest_area = 0
+                for cnt in contours:
+                    area = cv2.contourArea(cnt)
+                    if area < 50:
+                        continue
+                    (x, y), radius = cv2.minEnclosingCircle(cnt)
+                    if 5 < radius < 200 and area > largest_area:
+                        largest_area = area
+                        selected_center = (int(x), int(y))
+                        selected_radius = int(radius)
+                        selected_color = (255, 0, 0)  # 藍色
+
+                # === 若藍色找不到，再用綠色（霍夫圓） ===
+                if selected_center is None:
+                    circles = cv2.HoughCircles(
+                        blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=30,
+                        param1=50, param2=15, minRadius=5, maxRadius=200
+                    )
+                    if circles is not None:
+                        circles = np.uint16(np.around(circles))
+                        max_r = 0
+                        for c in circles[0, :]:
+                            if c[2] > max_r:
+                                selected_center = (c[0], c[1])
+                                selected_radius = c[2]
+                                selected_color = (0, 255, 0)  # 綠色
+
+                # 若找到球，畫出圓形並計算偏移
+                if selected_center is not None:
+                    cv2.circle(output, selected_center, selected_radius, selected_color, 2)
+                    cv2.circle(output, selected_center, 2, (0, 0, 255), 3)
+                    delta_x = selected_center[0] - center_x
+                else:
+                    delta_x = None
+                    selected_radius = None
                 
                 # 顯示所有視窗
                 cv2.imshow("原圖", frame)
+                cv2.imshow("HSV", hsv)
                 cv2.imshow("模糊後遮罩", blurred)
                 cv2.imshow("偵測結果", output)
                 
