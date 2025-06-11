@@ -110,7 +110,7 @@ def main():
         try:
             detector = PingPongDetector2()  # 建立乒乓球偵測器
             ser = SerialTransfer()  # 初始化串口傳輸
-            cmd = 's\0' # 指令字串，去除換行符號
+            cmd = 's' # 指令字串，去除換行符號
             ser.send_string(cmd) 
             print(ser.read_data())
             while True:
