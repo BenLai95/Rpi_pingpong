@@ -20,8 +20,8 @@ void setup() {
   myservo.attach(24);
   myservo.write(90);
   Serial.begin(9600);
-  Wire.begin(ARDUINO_ADDR);
-  Wire.onReceive(receiveEvent);
+  //Wire.begin(ARDUINO_ADDR);
+  //Wire.onReceive(receiveEvent);
   //Wire.onRequest(requestEvent);  // 新增請求處理函數
 }
 
@@ -39,14 +39,17 @@ void loop() {
         }
     }*/
 
-  while (running) {
+  /*while (running) {
     distance = ultrasonic.read();
     tracking(error);
     if (buf[0] == 'n') {
       error = 0;
       Rotate();
     }
-  }
+  }*/
+  String msg = Serial.readString();
+  delay(5000);
+  Serial.print(msg);
 }
 int n = 0;
 void receiveEvent(int nbyte) {
