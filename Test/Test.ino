@@ -21,7 +21,7 @@ void setup() {
 
 void loop() {
   MotorWriting(0,0);
-  Serial2.write('r');
+  Serial2.print('r');
   if(Serial2.available()){
     char s = Serial2.read();
     if(s == 'e'){

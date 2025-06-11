@@ -180,6 +180,7 @@ def main():
         try:
             detector = PingPongDetector2()  # 建立乒乓球偵測器
             ser = SerialTransfer()  # 初始化串口傳輸
+            print("成功連接")
             while True:
                 frame = camera.capture_frame()  # 擷取一張影像
                 delta_x, radius = detector.detect_ball_hsv(frame, visualize=False)
@@ -195,6 +196,8 @@ def main():
                         else:
                             ser.send_char('n')
                             print("No ping pong ball detected.")
+                else:
+                    print("data = none")
         except KeyboardInterrupt:
             ser.send_char('p')
         finally:
