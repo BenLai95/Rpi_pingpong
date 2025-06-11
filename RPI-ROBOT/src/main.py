@@ -1,5 +1,5 @@
 from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
-from detection.pingpong_detector import PingPongDetector
+from detection.pingpong_detector import PingPongDetector1
 from detection.pingpong_detector_test import PingPongDetector2
 from Communication.communication import I2CCommunication
 from serialtransfer.serialtest import SerialTransfer
@@ -14,7 +14,7 @@ def main():
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
     #camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
 
-    detector = PingPongDetector()  # 建立乒乓球偵測器
+    detector = PingPongDetector1()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
