@@ -21,9 +21,9 @@ void setup() {
 void loop() {
   while (Serial.available()) {
     char s = Serial.read();
+    Serial.write(s);
     if (s == 's') {
       running = 1;
-      Serial.write(s);
     }
     while (running) {
       myservo.write(90);

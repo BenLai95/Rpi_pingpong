@@ -113,6 +113,7 @@ def main():
             ser.send_char('s') 
             print(ser.read_data())
             while True:
+                print("Sented Data is :",ser.read_data())
                 frame = camera.capture_frame()  # 擷取一張影像
                 delta_x,radius = detector.detect_ball_hsv(frame, visualize=False)
                 if delta_x is None or radius is None:
