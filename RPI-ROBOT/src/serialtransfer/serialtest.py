@@ -62,6 +62,23 @@ class SerialTransfer:
             print(f"Error sending float: {e}")
             return False
 
+    def send_int(self, value):
+        if not self.ser:
+            print("Serial port not open")
+            return False
+        try:
+            i = int(value)
+            data = f"{i}"
+            print(f"Sending int: {data}")
+            self.ser.write(data.encode('ascii') + b'\n')
+            return True
+        except ValueError:
+            print("Error: provided value is not an int")
+            return False
+        except serial.SerialException as e:
+            print(f"Error sending int: {e}")
+            return False
+
     def read_data(self):
         if not self.ser:
             print("Serial port not open")

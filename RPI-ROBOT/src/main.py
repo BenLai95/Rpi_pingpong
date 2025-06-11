@@ -18,11 +18,11 @@ def main():
 
     camera.start()  # 啟動攝影機
 
-    #mode = 0 #拍一張照片並儲存
+    mode = 0 #拍一張照片並儲存
     #mode = 1 #持續偵測乒乓球
     #mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
-    mode = 4  # 循跡
+    #mode = 4  # 循跡
 
     if mode == 0:
         try:
@@ -133,8 +133,6 @@ def main():
         try:
             detector = PingPongDetector2()  # 建立乒乓球偵測器
             ser = SerialTransfer()  # 初始化串口傳輸
-            ser.send_char('s') 
-            print(ser.read_data())
             while True:
                 frame = camera.capture_frame()  # 擷取一張影像
                 delta_x, radius = detector.detect_ball_hsv(frame, visualize=False)
@@ -145,6 +143,7 @@ def main():
                         if(delta_x is not None and radius is not None):
                             ser.send_char('e')
                             ser.send_float(float(error))
+                            ser.send_int(radius)
                             print("Error is ",error)
                         else:
                             ser.send_char('n')

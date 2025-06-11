@@ -65,4 +65,11 @@ void Rotate() {
   MotorWriting(0,0);
 }
 
+void error_rotating(double error){
+  float derror = error - pre_error;
+  int powercorrection = Kp * error + Kd * derror;
+  MotorWriting(powercorrection, -powercorrection);
+  pre_error = error;
+}
+
 #endif  // TRACK_H
