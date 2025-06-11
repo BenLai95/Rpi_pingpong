@@ -33,7 +33,7 @@ void loop() {
       Rotate();
     }
     else if(s == 'p'){
-      break;
+      return;
     }
   }
   if (hasFloat) {
@@ -41,7 +41,7 @@ void loop() {
       String f = Serial2.readStringUntil('\n');
       error = f.toFloat();
       String r = Serial2.readStringUntil('\n');
-      radius = r.toInt();
+      int radius = r.toInt();
       Serial.print("Error is: ");
       Serial.println(error);
       if(abs(error) < 0.5 && radius < 50){
@@ -65,9 +65,11 @@ void loop() {
           delay(500);
           myservo.write(90);
         }
-      hasFloat = false;
+        hasFloat = false;
+      }
     }
   }
+  MotorWriting(0,0);
 }
 
 
