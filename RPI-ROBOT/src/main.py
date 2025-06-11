@@ -109,6 +109,7 @@ def main():
         try:
             detector = PingPongDetector2()  # 建立乒乓球偵測器
             ser = I2CCommunication()  # 初始化串口傳輸
+            ser.send_string('s') 
             while True:
                 frame = camera.capture_frame()  # 擷取一張影像
                 delta_x,radius = detector.detect_ball_hsv(frame, visualize=False)
@@ -121,6 +122,8 @@ def main():
                     ser.send_string('e')
                     time.sleep(0.01)
                     ser.send_float(float(error))
+        except KeyboardInterrupt:
+            ser.send_string('p')
         finally:
             camera.stop()
         

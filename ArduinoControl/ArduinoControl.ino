@@ -9,6 +9,7 @@ int pos = 180;  // 設定 Servo 位置的變數
 float error = 0;
 char buf[128];
 bool hasFloat = false;
+bool running = false;
 
 Ultrasonic ultrasonic(22, 23);
 int distance;
@@ -25,8 +26,6 @@ void setup() {
 }
 
 void loop() {
-  // 更新距離數據
-  distance = ultrasonic.read();
   // 檢查序列埠是否有資料
   /*while (Serial.available() > 0) {
         char c = Serial.read();
@@ -39,36 +38,48 @@ void loop() {
             serialInput += c;
         }
     }*/
-  //tracking(error);
-  /*if(buf[0]=='n'){
-    error = 0;
-    Rotate();
-  }*/
+
+  while (running) {
+    distance = ultrasonic.read();
+    tracking(error);
+    if (buf[0] == 'n') {
+      error = 0;
+      Rotate();
+    }
+  }
 }
-int n=0;
+int n = 0;
 void receiveEvent(int nbyte) {
   if (hasFloat) {
-      union { byte b[4]; float f; } u;
-      for (int i = 0; i < 4; i++) {
-        if(i==0){
-          int k = Wire.read();
-        }
-        u.b[i] = Wire.read();
-        Serial.print("Float byte is ");
-        Serial.println(int(u.b[i]));
+    union {
+      byte b[4];
+      float f;
+    } u;
+    for (int i = 0; i < 4; i++) {
+      if (i == 0) {
+        int k = Wire.read();
       }
-      error = u.f;
-      hasFloat = false;
-  }
-  else{
+      u.b[i] = Wire.read();
+      Serial.print("Float byte is ");
+      Serial.println(int(u.b[i]));
+    }
+    error = u.f;
+    hasFloat = false;
+  } else {
     buf[nbyte] = 0;
-    for(int i=0;i<nbyte;i++){
+    for (int i = 0; i < nbyte; i++) {
       buf[i] = Wire.read();
       Serial.print("Buf byte is ");
       Serial.println(int(buf[i]));
     }
-    if(buf[0]=='e'){
+    if (buf[0] == 'e') {
       hasFloat = true;
+    }
+    if (buf[0] == 's') {
+      running = true;
+    }
+    if (buf[0] == 'p') {
+      running = false;
     }
     Serial.print("Buf is ");
     Serial.println(error);
