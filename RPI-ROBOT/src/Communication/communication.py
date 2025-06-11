@@ -39,21 +39,16 @@ class I2CCommunication:
             return False
 
     def send_float(self, value):
-        """將 float 轉 4 bytes (小端序) 並透過 I2C 逐 byte 傳送給 Arduino"""
         if not self.bus:
             print("I2C bus not open")
             return False
-        try:
-            import struct
-            packed = struct.pack('<f', float(value))
-            print("packed is", packed)
-            for b in packed:
-                print("b is",b,'\n')
-                self.bus.write_byte(self.address, b)
-            return True
-        except Exception as e:
-            print(f"Error sending float: {e}")
-            return False
+
+        import struct
+        # 直接 pack，不再做 try/except
+        packed = struct.pack('<f', value)
+        for b in packed:
+            self.bus.write_byte(self.address, b)
+        return True
 
     def read_byte(self):
         if not self.bus:
