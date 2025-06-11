@@ -16,14 +16,12 @@ void setup() {
   myservo.write(90);
   Serial.begin(9600);
   Serial2.begin(9600);
-  myservo.write(170);
 }
 
 void loop() {
   MotorWriting(0,0);
-  Serial2.print('r');
-  
-  /*if(Serial2.available()){
+  Serial2.println('r');
+  if(Serial2.available()){
     char s = Serial2.read();
     if(s == 'e'){
       hasFloat = 1;
@@ -70,7 +68,7 @@ void loop() {
       }
     }
   }
-  MotorWriting(0,0);*/
+  MotorWriting(0,0);
 }
 
 
