@@ -1,100 +1,47 @@
 from smbus import SMBus
+import struct
+import time
 
 class I2CCommunication:
     def __init__(self, address=0x8, bus_no=1):
         self.address = address
-        self.bus_no = bus_no
-        try:
-            self.bus = SMBus(self.bus_no)
-            print(f"I2C bus {self.bus_no} opened, address: {hex(self.address)}")
-        except Exception as e:
-            print(f"Error opening I2C bus: {e}")
-            self.bus = None
+        self.bus = SMBus(bus_no)
+        print(f"I2C bus {bus_no} opened, address: {hex(self.address)}")
 
     def send_string(self, message):
-        if not self.bus:
-            print("I2C bus not open")
-            return False
-        try:
-            for c in message:
-                self.bus.write_byte(self.address, ord(c))
-            return True
-        except Exception as e:
-            print(f"Error sending string: {e}")
-            return False
-
-    def send_int(self, value):
-        if not self.bus:
-            print("I2C bus not open")
-            return False
-        try:
-            # 如果 main.py 傳進來的是 float，就走 send_float（前面已經發過 'e'）
-            if isinstance(value, float):
-                return self.send_float(value)
-            # 否則當成一般 int 處理
-            self.bus.write_byte(self.address, int(value))
-            return True
-        except Exception as e:
-            print(f"Error sending int: {e}")
-            return False
+        # 直接把字串每個字元依 ASCII 寫入
+        for c in message:
+            self.bus.write_byte(self.address, ord(c))
 
     def send_float(self, value):
-        if not self.bus:
-            print("I2C bus not open")
-            return False
-
-        import struct
-        # 直接 pack，不再做 try/except
+        # 一次送出 4 bytes 小端序 float
         packed = struct.pack('<f', value)
-        for b in packed:
-            self.bus.write_byte(self.address, b)
-        return True
+        self.bus.write_i2c_block_data(self.address, 0x00, list(packed))
 
     def read_byte(self):
-        if not self.bus:
-            print("I2C bus not open")
-            return None
-        try:
-            return self.bus.read_byte(self.address)
-        except Exception as e:
-            print(f"Error reading byte: {e}")
-            return None
+        return self.bus.read_byte(self.address)
 
     def read_data(self, timeout=1.0):
-        """讀取 Arduino 回傳的資料，加入超時機制"""
-        if not self.bus:
-            print("I2C bus not open")
+        start = time.time()
+        buf = []
+        while time.time() - start < timeout:
+            b = self.bus.read_byte(self.address)
+            if b == 0:
+                break
+            buf.append(b)
+            time.sleep(0.01)
+        if not buf:
             return None
-        try:
-            import time
-            start_time = time.time()
-            data = []
-            while (time.time() - start_time) < timeout:
-                try:
-                    byte = self.bus.read_byte(self.address)
-                    if byte == 0:
-                        break
-                    data.append(byte)
-                except:
-                    time.sleep(0.01)
-                    continue
-            
-            if data:
-                message = ''.join(chr(b) for b in data)
-                # 解析前綴
-                if message.startswith("S:"):  # Serial input
-                    return ("serial", message[2:])
-                elif message.startswith("D:"):  # Distance
-                    return ("distance", int(message[2:]))
-            return None
-        except Exception as e:
-            print(f"Error reading data: {e}")
-            return None
+        msg = ''.join(chr(x) for x in buf)
+        if msg.startswith("S:"):
+            return ("serial", msg[2:])
+        if msg.startswith("D:"):
+            return ("distance", int(msg[2:]))
+        return None
 
     def close(self):
-        if self.bus:
-            self.bus.close()
-            print("I2C bus closed")
+        self.bus.close()
+        print("I2C bus closed")
 
 # 範例 main 程式（可刪除，僅供測試）
 if __name__ == '__main__':

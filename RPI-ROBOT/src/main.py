@@ -119,6 +119,7 @@ def main():
                     error = delta_x/radius if radius else -1
                     print("Error is",error)
                     ser.send_string('e')
+                    time.sleep(0.01)
                     ser.send_float(float(error))
         finally:
             camera.stop()
