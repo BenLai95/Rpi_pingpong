@@ -28,6 +28,23 @@ class SerialTransfer:
             print(f"Error sending string: {e}")
             return False
 
+    def send_char(self, char):
+        if not self.ser:
+            print("Serial port not open")
+            return False
+        try:
+            if len(char) != 1:
+                raise ValueError("請傳入單一字元")
+            print(f"Sending char: {char}")
+            self.ser.write(char.encode('ascii'))
+            return True
+        except ValueError as e:
+            print(f"Error: {e}")
+            return False
+        except serial.SerialException as e:
+            print(f"Error sending char: {e}")
+            return False
+
     def read_data(self):
         if not self.ser:
             print("Serial port not open")
@@ -51,9 +68,10 @@ if __name__ == '__main__':
     st = SerialTransfer()
     try:
         while True:
-            s = input("請輸入字串 (直接按Enter跳過): ").strip()
-            if s:
-                st.send_string(s)
+
+            c = input("請輸入單一字元 (直接按Enter跳過): ").strip()
+            if c:
+                st.send_char(c[0])
 
             rec = st.read_data()
             if rec:

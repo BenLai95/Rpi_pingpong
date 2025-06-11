@@ -18,26 +18,26 @@ void setup() {
 }
 
 void loop() {
-  while(Serial.available()){
+  while (Serial.available()) {
     char s = Serial.read();
-    else if(s=='s'){
+    if (s == 's') {
       running = 1;
     }
     while (running) {
-    distance = ultrasonic.read();
-    if(s>='0'&&s<='9'){
-      myservo.write(10*(s-'0'));
-    }
-    /*tracking(error);
+      distance = ultrasonic.read();
+      if (s >= '0' && s <= '9') {
+        myservo.write(10 * (s - '0'));
+      }
+      /*tracking(error);
     if (buf[0] == 'n') {
       error = 0;
       Rotate();
     }*/
-    if(s == 'p'){
-      running = 0;
-    }
-    else if(s == 'e'){
-      hasFloat = 1;
+      if (s == 'p') {
+        running = 0;
+      } else if (s == 'e') {
+        hasFloat = 1;
+      }
     }
   }
 }
