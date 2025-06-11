@@ -1,7 +1,7 @@
 from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
 from detection.pingpong_detector import PingPongDetector
 from detection.pingpong_detector_test import PingPongDetector2
-#from Communication.communication import I2CCommunication
+from Communication.communication import I2CCommunication
 import time
 import cv2
 import numpy as np
