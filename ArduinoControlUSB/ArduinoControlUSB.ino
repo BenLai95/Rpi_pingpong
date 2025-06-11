@@ -29,6 +29,7 @@ void loop() {
       error = 0;
       Rotate();
     } else if (s == 'p') {
+      myservo.write(170);
       break;
     } else if (s == 'e') {
       hasFloat = 1;
@@ -74,7 +75,7 @@ void loop() {
           delay(500);
           myservo.write(90);
         }
-        delay(100);
+        delay(400);
       }
     }
   }
