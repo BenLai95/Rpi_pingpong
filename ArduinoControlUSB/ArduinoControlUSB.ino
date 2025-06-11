@@ -29,29 +29,6 @@ void loop() {
       error = 0;
       Rotate();
     } else if (s == 'p') {
-      MotorWriting(0, 0);
-      while (true) {
-        int distance = ultrasonic.read();
-        if (distance <= 25) {
-          break;
-        } else {
-          MotorWriting(60, 60);
-          delay(50);
-        }
-      }
-      MotorWriting(0, 0);
-      myservo.write(120);
-      delay(500);
-      myservo.write(150);
-      delay(500);
-      myservo.write(180);
-      delay(500);
-      myservo.write(150);
-      delay(500);
-      myservo.write(120);
-      delay(500);
-      myservo.write(90);
-
       break;
     } else if (s == 'e') {
       hasFloat = 1;
@@ -59,15 +36,45 @@ void loop() {
     if (running) {
       myservo.write(90);
       if (hasFloat) {
-        String f = Serial.readStringUntil('\n');
+        String f = Serial2.readStringUntil('\n');
         error = f.toFloat();
+        String r = Serial2.readStringUntil('\n');
+        int radius = r.toInt();
         Serial.print("Error is: ");
         Serial.println(error);
-        tracking(error);
-        hasFloat = 0;
-        delay(500);
-      } else {
-        distance = ultrasonic.read();
+        if (radius < 80) {
+          tracking(error);
+          hasFloat = 0;
+        } else if (radius > 80 && error > 1) {
+          MotorWriting(0, 0);
+          error_tracking(error);
+          hasFloat = 0;
+        } else if (radius > 80 && error < 1) {
+          MotorWriting(0, 0);
+          delay(100);
+          while (true) {
+            int distance = ultrasonic.read();
+            if (distance <= 30) {
+              break;
+            } else {
+              MotorWriting(60, 60);
+              delay(50);
+            }
+          }
+          MotorWriting(0, 0);
+          myservo.write(120);
+          delay(500);
+          myservo.write(150);
+          delay(500);
+          myservo.write(180);
+          delay(500);
+          myservo.write(150);
+          delay(500);
+          myservo.write(120);
+          delay(500);
+          myservo.write(90);
+        }
+        delay(100);
       }
     }
   }

@@ -18,7 +18,7 @@ int Tp = 100;
 float pre_error = 0;
 float Kp = 8;
 float Kd = 3;
-float adj = 0.8;
+float adj = 0.9;
 #define MotorR_I1 3    // 定義 A1 接腳（右）
 #define MotorR_I2 2    // 定義 A2 接腳（右）
 #define MotorR_PWMR 11 // 定義 ENA (PWM調速) 接腳
@@ -78,4 +78,7 @@ void Rotate() {
   MotorWriting(0,0);
 }
 
+void error_tracking(double error){
+  MotorWriting(adj*(error), -error);
+}
 #endif  // TRACK_H
