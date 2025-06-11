@@ -10,6 +10,7 @@ Ultrasonic ultrasonic(22, 23);
 int distance;
 
 String serialInput = "";
+String remainingInput = "";  // 儲存尚未傳送的資料
 
 void setup() { 
     myservo.attach(24);
@@ -51,19 +52,50 @@ void receiveEvent(int nbyte) {
 
 // 修改回傳函數
 void requestEvent() {
-    // 檢查並傳送序列埠輸入
-    if (serialInput.length() > 0) {
-        // 印出除錯資訊
-        Serial.print("Sending: ");
-        Serial.println(serialInput);
-        
-        // 傳送資料
-        Wire.write(serialInput.c_str());
-        
-        // 傳送完成後清空字串
-        serialInput = "";
+    String toSend;
+    toSend = serialInput;
+    Serial.print("toSend =");
+    Serial.println(toSend);
+    Wire.write(toSend,len(toSend));
+
+    /*if (serialInput.length() > 0 || remainingInput.length() > 0) {
+        // 如果有剩餘資料，優先處理
+        String toSend;
+        if (remainingInput.length() > 0) {
+            toSend = remainingInput;
+            remainingInput = "";
+        } else {
+            toSend = serialInput;
+            serialInput = "";
+        }
+
+        // 如果資料超過31個字元，分次傳送
+        if (toSend.length() > 31) {
+            // 取前31個字元傳送
+            String currentSend = toSend.substring(0, 31);
+            // 保存剩餘的字元
+            remainingInput = toSend.substring(31);
+            
+            char buffer[32];
+            currentSend.toCharArray(buffer, 32);
+            Wire.write((uint8_t*)buffer, 32);
+            
+            Serial.print("Sending part: ");
+            Serial.println(currentSend);
+            Serial.print("Remaining: ");
+            Serial.println(remainingInput);
+        } else {
+            // 資料夠短，一次傳完
+            char buffer[32];
+            toSend.toCharArray(buffer, 32);
+            Wire.write((uint8_t*)buffer, 32);
+            
+            Serial.print("Sending all: ");
+            Serial.println(toSend);
+        }
     } else {
-        // 如果沒有輸入，傳送空值標記
-        Wire.write("NONE", 4);
-    }
+        // 發送固定長度的空值標記
+        char buffer[32] = "NONE";
+        Wire.write((uint8_t*)buffer, 32);
+    }*/
 }
