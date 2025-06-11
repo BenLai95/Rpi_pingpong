@@ -16,6 +16,7 @@ class I2CCommunication:
     def send_float(self, value):
         # 一次送出 4 bytes 小端序 float
         packed = struct.pack('<f', value)
+        print(packed)
         self.bus.write_i2c_block_data(self.address, 0x00, list(packed))
 
     def read_byte(self):
