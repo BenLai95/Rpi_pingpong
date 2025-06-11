@@ -2,6 +2,7 @@ from camera.pi_camera import PiCamera, WebcamCamera, ImageCamera
 from detection.pingpong_detector import PingPongDetector
 from detection.pingpong_detector_test import PingPongDetector2
 from Communication.communication import I2CCommunication
+from serialtransfer.serialtest import SerialTransfer
 import time
 import cv2
 import numpy as np
@@ -108,22 +109,21 @@ def main():
     elif mode == 4:
         try:
             detector = PingPongDetector2()  # 建立乒乓球偵測器
-            ser = I2CCommunication()  # 初始化串口傳輸
-            ser.send_string('s') 
+            ser = SerialTransfer()  # 初始化串口傳輸
+            ser.send_char('s') 
             while True:
                 frame = camera.capture_frame()  # 擷取一張影像
                 delta_x,radius = detector.detect_ball_hsv(frame, visualize=False)
                 if delta_x is None or radius is None:
                     print("No ping pong ball detected.")
-                    ser.send_string('n')
+                    ser.send_char('n')
                 else:
                     error = delta_x/radius if radius else -1
                     print("Error is",error)
-                    ser.send_string('e')
-                    time.sleep(0.01)
+                    ser.send_char('e')
                     ser.send_float(float(error))
         except KeyboardInterrupt:
-            ser.send_string('p')
+            ser.send_char('p')
         finally:
             camera.stop()
         

@@ -15,39 +15,35 @@ void setup() {
   myservo.attach(24);
   myservo.write(90);
   Serial.begin(9600);
+  myservo.write(170);
 }
 
 void loop() {
   while (Serial.available()) {
-      String s = Serial.readStringUntil('\n');
-      float f = s.toFloat();
-      if (s.length() > 0) {
-        Serial.print("Got float: ");
-        Serial.println(f);
-        myservo.write((int)f);
-      }
-    /*char s = Serial.read();
+    char s = Serial.read();
     if (s == 's') {
       running = 1;
     }
     while (running) {
-      distance = ultrasonic.read();
-      if (s >= '0' && s <= '9') {
-        myservo.write(10 * (s - '0'));
+      myservo.write(90);
+      if (hasFloat) {
+        String f = Serial.readStringUntil('\n');
+        error = f.toFloat();
+        hasFloat = 0;
+      } else {
+        distance = ultrasonic.read();
+        tracking(error);
+        if (s == 'n') {
+          error = 0;
+          Rotate();
+        }
+        if (s == 'p') {
+          running = 0;
+        } else if (s == 'e') {
+          hasFloat = 1;
+        }
       }
-      */
-    /*tracking(error);
-if (buf[0] == 'n') {
-  error = 0;
-  Rotate();
-}*/
-    /*
-   if (s == 'p') {
-     running = 0;
-   } else if (s == 'e') {
-     hasFloat = 1;
-   }
- }*/
+    }
   }
-  MotorWriting(0,0);
+  MotorWriting(0, 0);
 }
