@@ -185,6 +185,7 @@ def main():
                 frame = camera.capture_frame()  # 擷取一張影像
                 delta_x, radius = detector.detect_ball_hsv(frame, visualize=False)
                 error = delta_x/radius if radius else -1
+                print("拍完照")
                 if(ser.read_data() != None):
                     com = ser.read_data()
                     if(com == 'r'): #request
