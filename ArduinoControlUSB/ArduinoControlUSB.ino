@@ -20,9 +20,9 @@ void setup() {
 
 void loop() {
   while (Serial.available()) {
-    char s = Serial.read();
-    Serial.write(s);
-    if (s == 's') {
+    String s = Serial.readStringUntil('\n');
+    Serial.write(s[0]);
+    if (s[0] == 's') {
       running = 1;
     }
     while (running) {
@@ -34,13 +34,13 @@ void loop() {
       } else {
         distance = ultrasonic.read();
         tracking(error);
-        if (s == 'n') {
+        if (s[0] == 'n') {
           error = 0;
           Rotate();
         }
-        if (s == 'p') {
+        if (s[0] == 'p') {
           running = 0;
-        } else if (s == 'e') {
+        } else if (s[0] == 'e') {
           hasFloat = 1;
         }
       }
