@@ -23,6 +23,7 @@ def main():
     #mode = 2 # 偵測乒乓球
     #mode = 3 # 偵測乒乓球 + HSV調整
     #mode = 4  # 循跡
+    #mode = 5  # 循跡 + 遠端控制
 
     if mode == 0:
         try:
