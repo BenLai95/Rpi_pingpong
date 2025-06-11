@@ -45,11 +45,14 @@ void loop() {
     Rotate();
   }*/
 }
-
+int n=0;
 void receiveEvent(int nbyte) {
   if (hasFloat) {
       union { byte b[4]; float f; } u;
       for (int i = 0; i < 4; i++) {
+        if(i==0){
+          int k = Wire.read();
+        }
         u.b[i] = Wire.read();
         Serial.print("Float byte is ");
         Serial.println(int(u.b[i]));
@@ -65,10 +68,13 @@ void receiveEvent(int nbyte) {
       Serial.println(int(buf[i]));
     }
     if(buf[0]=='e'){
-      hasFloat = 1;
+      hasFloat = true;
     }
     Serial.print("Buf is ");
+    Serial.println(error);
     Serial.println(buf);
+    Serial.println(n);
+    n++;
   }
 }
 
