@@ -20,9 +20,9 @@ void setup() {
   myservo.attach(24);
   myservo.write(90);
   Serial.begin(9600);
-  //Wire.begin(ARDUINO_ADDR);
-  //Wire.onReceive(receiveEvent);
-  //Wire.onRequest(requestEvent);  // 新增請求處理函數
+  Wire.begin(ARDUINO_ADDR);
+  Wire.onReceive(receiveEvent);
+  Wire.onRequest(requestEvent);  // 新增請求處理函數
 }
 
 void loop() {
@@ -47,9 +47,6 @@ void loop() {
       Rotate();
     }
   }*/
-  String msg = Serial.readString();
-  delay(5000);
-  Serial.print(msg);
 }
 int n = 0;
 void receiveEvent(int nbyte) {
@@ -95,7 +92,7 @@ void receiveEvent(int nbyte) {
 
 
 // 修改回傳函數
-/*void requestEvent() {
+void requestEvent() {
     String data;
     if (serialInput != "") {
         // 如果有序列埠輸入，回傳該輸入
@@ -106,4 +103,4 @@ void receiveEvent(int nbyte) {
     }
     Wire.write(data.c_str(), data.length());
 
-}*/
+}
