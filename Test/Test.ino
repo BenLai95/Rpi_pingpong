@@ -33,7 +33,7 @@ void loop() {
       Rotate();
     }
     else if(s == 'p'){
-      break;
+      return;
     }
   }
   if (hasFloat) {
@@ -41,7 +41,7 @@ void loop() {
       String f = Serial2.readStringUntil('\n');
       error = f.toFloat();
       String r = Serial2.readStringUntil('\n');
-      radius = r.toInt();
+      int radius = r.toInt();
       Serial.print("Error is: ");
       Serial.println(error);
       if(abs(error) < 0.5 && radius < 50){
@@ -50,10 +50,26 @@ void loop() {
         error_rotating(error);  // 使用 error 來調整伺服馬達
       }else if(radius >= 50){
         distance = ultrasonic.read();//寫到這邊還沒寫完
-
-      hasFloat = false;
+        if(distance<=10 || distance>=30){
+          MotorWriting(70,70);
+        }else{
+          myservo.write(120);
+          delay(500);
+          myservo.write(150);
+          delay(500);
+          myservo.write(180);
+          delay(500);
+          myservo.write(150);
+          delay(500);
+          myservo.write(120);
+          delay(500);
+          myservo.write(90);
+        }
+        hasFloat = false;
+      }
     }
   }
+  MotorWriting(0,0);
 }
 
 
