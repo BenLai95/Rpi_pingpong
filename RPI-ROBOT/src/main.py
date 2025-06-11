@@ -123,6 +123,7 @@ def main():
                     print("Error is",error)
                     ser.send_char('e')
                     ser.send_float(float(error))
+                time.sleep(1)
         except KeyboardInterrupt:
             ser.send_char('p')
         finally:
