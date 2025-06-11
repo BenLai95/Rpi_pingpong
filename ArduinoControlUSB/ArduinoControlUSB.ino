@@ -25,6 +25,36 @@ void loop() {
     if (s == 's') {
       running = 1;
       Serial.println("Start Running");
+    } else if (s == 'n') {
+      error = 0;
+      Rotate();
+    } else if (s == 'p') {
+      MotorWriting(0, 0);
+      while (true) {
+        int distance = ultrasonic.read();
+        if (distance <= 25) {
+          break;
+        }else{
+          MotorWriting(60, -60);
+          delay(50);
+          MotorWriting(60, 60);
+          delay(50);
+        }
+        myservo.write(120);
+        delay(500);
+        myservo.write(150);
+        delay(500);
+        myservo.write(180);
+        delay(500);
+        myservo.write(150);
+        delay(500);
+        myservo.write(120);
+        delay(500);
+        myservo.write(90);
+      }
+      break;
+    } else if (s == 'e') {
+      hasFloat = 1;
     }
     if (running) {
       myservo.write(90);
@@ -33,24 +63,14 @@ void loop() {
         error = f.toFloat();
         Serial.print("Error is: ");
         Serial.println(error);
+        tracking(error);
         hasFloat = 0;
       } else {
         distance = ultrasonic.read();
-        tracking(error);
-        if (s == 'n') {
-          error = 0;
-          Rotate();
-        } else if (s == 'p') {
-          running = 0;
-        } else if (s == 'e') {
-          hasFloat = 1;
-        }
       }
     }
   }
-  MotorWriting(0, 0);
 }
 
-void Processing(){
-
+void Processing() {
 }
