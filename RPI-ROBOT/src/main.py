@@ -14,7 +14,7 @@ def main():
     #camera = WebcamCamera(camera_id=0)  # 使用第一個USB攝影機
     #camera = ImageCamera(image_path='image/captured_frame.jpg')  # 使用測試圖片
 
-    detector = PingPongDetector2()  # 建立乒乓球偵測器
+    detector = PingPongDetector()  # 建立乒乓球偵測器
 
     camera.start()  # 啟動攝影機
 
