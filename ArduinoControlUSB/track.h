@@ -16,10 +16,10 @@
 #define TRACK_H
 int Tp = 100;
 float pre_error = 0;
-float Kp = 4;
-float Kd = 1;
+float Kp = 0.1;
+float Kd = 0.02;
 bool first_tracking = true;
-float adj = 0.9;
+float adj = 0.7;
 #define MotorR_I1 3     // 定義 A1 接腳（右）
 #define MotorR_I2 2     // 定義 A2 接腳（右）
 #define MotorR_PWMR 11  // 定義 ENA (PWM調速) 接腳
@@ -77,7 +77,7 @@ void tracking(double error) {
   }
   MotorWriting(adj * (Tp + powercorrection), Tp - powercorrection);
   pre_error = error;
-  delay(700);
+  delay(400);
 }  // tracking
 
 void Rotate() {
@@ -88,7 +88,7 @@ void Rotate() {
 
 void error_tracking(double error) {
   float derror = error - pre_error;
-  int powercorrection = 10 * (Kp * error + Kd * derror);
+  int powercorrection = 3*(Kp * error + Kd * derror);
   MotorWriting(adj * (powercorrection), -powercorrection);
 }
 #endif  // TRACK_H

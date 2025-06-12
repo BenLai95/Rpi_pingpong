@@ -126,7 +126,7 @@ def main():
                     ser.send_char('e')
                     ser.send_float(float(delta_x))
                     ser.send_int(int(radius))
-                    time.sleep(2)
+                    time.sleep(1)
         except KeyboardInterrupt:
             ser.send_char('p')
         finally:

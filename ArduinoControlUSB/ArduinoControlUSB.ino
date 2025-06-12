@@ -43,22 +43,20 @@ void loop() {
         int radius = r.toInt();
         Serial.print("Error is: ");
         Serial.println(error);
-        if (radius < 80) {
+        if (radius < 50) {
           tracking(error);
           hasFloat = 0;
-        } else if (radius > 80 && error >= 1) {
-          MotorWriting(0, 0);
-          error_tracking(error);
-          hasFloat = 0;
-        } else if (radius > 80 && error < 1) {
+        }
+        //else if (radius > 50 && (error < 50||error >150)) {
+        else if (radius > 50) {
           MotorWriting(0, 0);
           delay(100);
           while (true) {
             int distance = ultrasonic.read();
-            if (distance <= 30) {
+            if (distance <= 15) {
               break;
             } else {
-              MotorWriting(60, 60);
+              MotorWriting(70, 75);
               delay(50);
             }
           }
@@ -74,8 +72,11 @@ void loop() {
           myservo.write(120);
           delay(500);
           myservo.write(90);
-        }
-        delay(400);
+        } /*else if (radius > 50 && error >= 50) {
+          MotorWriting(0, 0);
+          error_tracking(error);
+          hasFloat = 0;
+        }*/
       }
     }
   }
