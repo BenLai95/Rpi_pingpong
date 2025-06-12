@@ -121,6 +121,7 @@ def main():
                 else:
                     error = delta_x/radius if radius else -1
                     print("Error is",error)
+                    print("Radius is",radius)
                     ser.send_char('e')
                     ser.send_float(float(error))
                     ser.send_int(int(radius))

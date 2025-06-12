@@ -46,7 +46,7 @@ void loop() {
         if (radius < 80) {
           tracking(error);
           hasFloat = 0;
-        } else if (radius > 80 && error > 1) {
+        } else if (radius > 80 && error >= 1) {
           MotorWriting(0, 0);
           error_tracking(error);
           hasFloat = 0;
