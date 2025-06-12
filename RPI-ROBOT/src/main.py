@@ -118,14 +118,15 @@ def main():
                 if delta_x is None or radius is None:
                     print("No ping pong ball detected.")
                     ser.send_char('n')
+                    time.sleep(0.5)
                 else:
                     error = delta_x/radius if radius else -1
                     print("Error is",error)
                     print("Radius is",radius)
                     ser.send_char('e')
-                    ser.send_float(float(error))
+                    ser.send_float(float(delta_x))
                     ser.send_int(int(radius))
-                time.sleep(2)
+                    time.sleep(2)
         except KeyboardInterrupt:
             ser.send_char('p')
         finally:

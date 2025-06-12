@@ -16,15 +16,16 @@
 #define TRACK_H
 int Tp = 100;
 float pre_error = 0;
-float Kp = 8;
-float Kd = 3;
+float Kp = 4;
+float Kd = 1;
+bool first_tracking = true;
 float adj = 0.9;
-#define MotorR_I1 3    // 定義 A1 接腳（右）
-#define MotorR_I2 2    // 定義 A2 接腳（右）
-#define MotorR_PWMR 11 // 定義 ENA (PWM調速) 接腳
-#define MotorL_I3 6    // 定義 B1 接腳（左）
-#define MotorL_I4 5    // 定義 B2 接腳（左）
-#define MotorL_PWML 12 // 定義 ENB (PWM調速) 接腳
+#define MotorR_I1 3     // 定義 A1 接腳（右）
+#define MotorR_I2 2     // 定義 A2 接腳（右）
+#define MotorR_PWMR 11  // 定義 ENA (PWM調速) 接腳
+#define MotorL_I3 6     // 定義 B1 接腳（左）
+#define MotorL_I4 5     // 定義 B2 接腳（左）
+#define MotorL_PWML 12  // 定義 ENB (PWM調速) 接腳
 /*===========================import variable===========================*/
 
 // Write the voltage to motor.
@@ -46,16 +47,16 @@ void MotorWriting(double vL, double vR) {
     digitalWrite(MotorL_I4, LOW);
     vL = -vL;
   }
-  if(vL>255){
+  if (vL > 255) {
     vL = 255;
   }
-  if(vR>255){
+  if (vR > 255) {
     vR = 255;
   }
-  if(vR<60 && vR >0){
+  if (vR < 60 && vR > 0) {
     vR = 60;
   }
-  if(vL<60 && vL >0){
+  if (vL < 60 && vL > 0) {
     vL = 60;
   }
   analogWrite(MotorL_PWML, vL);
@@ -68,18 +69,26 @@ void MotorWriting(double vL, double vR) {
 void tracking(double error) {
   float derror = error - pre_error;
   int powercorrection = Kp * error + Kd * derror;
-  MotorWriting(adj*(Tp + powercorrection), Tp - powercorrection);
+  if (first_tracking) {
+    int powercorrection = Kp * error;
+  }
+  if (powercorrection > 30) {
+    powercorrection = 30;
+  }
+  MotorWriting(adj * (Tp + powercorrection), Tp - powercorrection);
   pre_error = error;
   delay(700);
 }  // tracking
 
 void Rotate() {
-  MotorWriting(100,-100);
+  MotorWriting(100, -100);
   delay(100);
-  MotorWriting(0,0);
+  MotorWriting(0, 0);
 }
 
-void error_tracking(double error){
-  MotorWriting(adj*(error), -error);
+void error_tracking(double error) {
+  float derror = error - pre_error;
+  int powercorrection = 10 * (Kp * error + Kd * derror);
+  MotorWriting(adj * (powercorrection), -powercorrection);
 }
 #endif  // TRACK_H

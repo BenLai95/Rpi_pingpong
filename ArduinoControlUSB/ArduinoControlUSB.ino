@@ -82,5 +82,15 @@ void loop() {
   MotorWriting(0, 0);
 }
 
-void Processing() {
-}
+/*void loop() {
+  char s = Serial.read();
+  if(s == 'u'){
+    myservo.write(90);
+  }
+  else if(s == 'd'){
+    myservo.write(150);
+    delay(500);
+    myservo.write(175);
+  }
+  Serial.println(ultrasonic.read());
+}*/
