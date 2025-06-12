@@ -56,7 +56,7 @@ void loop() {
             if (distance <= 15) {
               break;
             } else {
-              MotorWriting(70, 75);
+              MotorWriting(60, 80);
               delay(50);
             }
           }

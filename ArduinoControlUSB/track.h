@@ -14,12 +14,12 @@
 
 #ifndef TRACK_H
 #define TRACK_H
-int Tp = 100;
+int Tp = 120;
 float pre_error = 0;
 float Kp = 0.1;
 float Kd = 0.02;
 bool first_tracking = true;
-float adj = 0.7;
+float adj = 0.6;
 #define MotorR_I1 3     // 定義 A1 接腳（右）
 #define MotorR_I2 2     // 定義 A2 接腳（右）
 #define MotorR_PWMR 11  // 定義 ENA (PWM調速) 接腳
