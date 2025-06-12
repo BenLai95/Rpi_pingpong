@@ -14,7 +14,7 @@
 
 #ifndef TRACK_H
 #define TRACK_H
-int Tp = 100;
+float Tp = 100;
 float pre_error = 0;
 float Kp = 8;
 float Kd = 3;

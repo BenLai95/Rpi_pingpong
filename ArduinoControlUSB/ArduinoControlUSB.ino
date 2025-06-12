@@ -64,6 +64,7 @@ void loop() {
         Serial.print("Error is: ");
         Serial.println(error);
         tracking(error);
+        delay(100);
         hasFloat = 0;
       } else {
         distance = ultrasonic.read();
