@@ -59,13 +59,12 @@ void loop() {
     if (running) {
       myservo.write(90);
       if (hasFloat) {
-        String f = Serial.readStringUntil('\n');
+        String f = Serial2.readStringUntil('\n');
         error = f.toFloat();
         Serial.print("Error is: ");
         Serial.println(error);
         tracking(error);
         hasFloat = 0;
-        delay(500);
       } else {
         distance = ultrasonic.read();
       }

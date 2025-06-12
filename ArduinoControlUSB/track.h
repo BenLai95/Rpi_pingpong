@@ -67,8 +67,9 @@ void MotorWriting(double vL, double vR) {
 // P/PID control Tracking
 void tracking(double error) {
   float derror = error - pre_error;
-  int powercorrection = Kp * error + Kd * derror;
+  float powercorrection = Kp * error + Kd * derror;
   MotorWriting(adj*(Tp + powercorrection), Tp - powercorrection);
+  Serial.print(powercorrection);
   pre_error = error;
 }  // tracking
 
