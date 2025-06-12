@@ -70,6 +70,7 @@ void tracking(double error) {
   int powercorrection = Kp * error + Kd * derror;
   MotorWriting(adj*(Tp + powercorrection), Tp - powercorrection);
   pre_error = error;
+  delay(700);
 }  // tracking
 
 void Rotate() {
